@@ -1,0 +1,16 @@
+{
+  "name": "dazacloud-plugins",
+  "owner": {
+    "name": "DazaCloud"
+  },
+  "metadata": {
+    "description": "Plugins de DazaCloud para que los consultores gestionen sus tareas con Claude Code."
+  },
+  "plugins": [
+    {
+      "name": "dazacloud-consultor",
+      "source": "./plugins/dazacloud-consultor",
+      "description": "Skills de los consultores de DazaCloud: ver sus tareas, iniciarlas, pausarlas y cerrarlas con resumen y horas."
+    }
+  ]
+}
