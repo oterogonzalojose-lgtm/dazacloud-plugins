@@ -10,7 +10,7 @@
     {
       "name": "dazacloud-consultor",
       "source": "./plugins/dazacloud-consultor",
-      "description": "Skills de los consultores de DazaCloud: ver sus tareas, iniciarlas, pausarlas y cerrarlas con resumen y horas."
+      "description": "Skills de los consultores de DazaCloud: ver sus tareas, iniciarlas, pausarlas, dejar preguntas para el cliente y cerrarlas con resumen y horas."
     }
   ]
 }

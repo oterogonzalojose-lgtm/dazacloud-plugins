@@ -1,7 +1,7 @@
 {
   "name": "dazacloud-consultor",
-  "version": "0.2.0",
-  "description": "Skills de los consultores de DazaCloud: ver sus tareas, iniciarlas, pausarlas y cerrarlas con resumen y horas.",
+  "version": "0.3.0",
+  "description": "Skills de los consultores de DazaCloud: ver sus tareas, iniciarlas, pausarlas, dejar preguntas para el cliente y cerrarlas con resumen y horas.",
   "author": { "name": "DazaCloud" },
   "userConfig": {
     "dazacloud_token": {
