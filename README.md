@@ -9,7 +9,7 @@ Necesitas Claude Code actualizado (`claude update`).
 1. Agrega el marketplace:
 
    ```
-   claude plugin marketplace add oterogonzalojose-lgtm/dazacloud-plugins
+   claude plugin marketplace add <usuario>/<repo>
    ```
 
 2. Instala el plugin:
@@ -22,7 +22,7 @@ Necesitas Claude Code actualizado (`claude update`).
 
 Para probar, dile a Claude "mis tareas".
 
-Dentro de Claude Code también puedes usar `/plugin marketplace add oterogonzalojose-lgtm/dazacloud-plugins` y `/plugin install dazacloud-consultor@dazacloud-plugins`.
+Dentro de Claude Code también puedes usar `/plugin marketplace add <usuario>/<repo>` y `/plugin install dazacloud-consultor@dazacloud-plugins`.
 
 ## Si el token no anda o hay que cambiarlo
 

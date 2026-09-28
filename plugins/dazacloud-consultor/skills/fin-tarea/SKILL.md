@@ -14,6 +14,10 @@ Cierras la tarea del consultor con un resumen claro y sus horas. El resumen es *
 - No inventes trabajo, pruebas ni evidencia: el resumen se arma solo con lo que el consultor contó (y lo que haya hecho contigo en esta sesión). Si falta algo, queda escrito que falta.
 - Superar la estimación no es un error: se pide la causa, no se juzga.
 
+## Cómo hablar
+
+Sigue "Cómo se muestra la información" de la biblia `general`. Si no está cargada, lo mínimo: primero lo importante y en pocas líneas; sin nombres de herramientas, campos ni estados del sistema; tiempos en horas y minutos ("1 h 15 min", nunca "1,25 h"); una pregunta por vez, con opciones numeradas; y cerrar diciendo qué puede decir la persona a continuación. Las plantillas de abajo muestran el tono y el largo esperados.
+
 ## Qué necesitas
 
 Servidor MCP `dazacloud`: `leer_biblia`, `mis_tareas`, `ver_tarea`, `finalizar_tarea`.
@@ -23,22 +27,20 @@ Servidor MCP `dazacloud`: `leer_biblia`, `mis_tareas`, `ver_tarea`, `finalizar_t
 1. `leer_biblia("fin-tarea")` y `leer_biblia("general")`: preguntas guiadas, formato del resumen, umbrales y qué no se factura. Mandan sobre lo de abajo, salvo en "Reglas que no se rompen".
 2. **Qué tarea.** La que está en curso. Si no hay ninguna en curso, pregunta entre las pausadas o no iniciadas (una línea cada una).
 3. `ver_tarea(tarea_id)`: spec, criterios de aceptación, advertencias (motivo del rechazo, si es retrabajo), `horas_estimadas` y `horas_registradas`.
-4. **Preguntas guiadas**, todas juntas y cortas. Por defecto (las de la biblia):
-   1. ¿Qué se pidió y qué hiciste?
-   2. ¿Qué modificaste o desarrollaste exactamente? (objetos, campos, clases, flows, configuraciones)
-   3. ¿Qué probaste y con qué resultado? (escenarios)
-   4. ¿Se cumplió el objetivo? Cumplido, parcial o no completado; si no, qué falta y por qué. (Lista los criterios de aceptación numerados para que responda por número.)
-   5. Solo retrabajos: ¿qué hiciste con cada hallazgo del QA (por número)? ¿El rechazo vino de un error propio?
-   6. ¿Quedó algo pendiente o que tenga que validar el cliente?
-   7. ¿Hay evidencia? (enlace a la sandbox, al registro, a capturas compartidas)
-   8. ¿Hubo bloqueos durante la tarea?
-   9. ¿Parte del tiempo fue corregir un error propio o rehacer algo mal implementado? ¿Cuánto, más o menos?
+4. **Qué hizo.** Lo que hay que saber está en las preguntas guiadas de la biblia (por defecto: qué se pidió y qué hizo; qué modificó exactamente —objetos, campos, clases, flows—; qué probó y con qué resultado; si se cumplió el objetivo y qué criterios de aceptación cubre; en retrabajos, qué hizo con cada hallazgo del QA y si el rechazo vino de un error propio; pendientes; evidencia; bloqueos; tiempo corrigiendo un error propio). **No las hagas todas juntas.** Arranca con una sola pregunta abierta:
 
-   Si en esta misma sesión trabajaste con el consultor en la tarea, prellena las respuestas con lo que ya sabes y pídele que confirme. Si una respuesta es vaga ("lo arreglé", "quedó funcionando"), repregunta una vez: qué problema había, qué se ajustó exactamente, qué se probó y con qué resultado.
-5. **Horas.** Muestra las registradas (reloj) y pregunta si las confirma o cuántas declara. Múltiplos de 0,25 h, máximo 24. Umbrales por defecto (la biblia manda):
-   - **Declaradas vs. reloj:** toda diferencia se justifica con una actividad concreta, su motivo y su resultado. Si es mayor a 1 h, pide además una referencia donde se pueda validar (ticket, subtarea, evidencia).
-   - **Declaradas vs. estimación** (`horas_estimadas`, si la hay): si la superan en **más de 30 min y más del 20 %**, o en **más de 2 h**, pide que explique la causa y el trabajo adicional. Por ejemplo, con 4 h estimadas: 4,5 h no pide nada (30 min justos); 5 h sí (1 h y 25 %).
-   - **Error propio:** si dijo que hubo, anota cuánto en el resumen. No lo descuentes de las declaradas: la coordinadora decide al aprobar qué parte no se factura.
+   > "Cuéntame con tus palabras qué hiciste, qué probaste y cómo quedó. Si quedó algo pendiente, hubo algún bloqueo o parte del tiempo fue corregir un error tuyo, dilo también."
+
+   Con esa respuesta completa todo lo que puedas y repregunta **de a una** solo lo que falte o haya quedado vago (como mucho tres repreguntas), por ejemplo: "¿Qué probaste exactamente?" o "De estos criterios, ¿cuáles quedaron? 1) … 2) … 3) …". Si en esta misma sesión trabajaste con el consultor en la tarea, arma lo que ya sabes y pídele solo que confirme. Si algo sigue sin saberse después de las repreguntas, queda escrito que falta.
+
+5. **Tiempo.** Una pregunta, con el reloj como primera opción:
+
+   > "El reloj marcó 35 min. ¿Cuánto le dedicaste?  1) 35 min   2) Otro (dime cuánto)"
+
+   El consultor habla en horas y minutos; tú pasas a decimales solo al llamar a la herramienta (múltiplos de 0,25 h, máximo 24). Umbrales por defecto (la biblia manda):
+   - **Declarado vs. reloj:** toda diferencia se justifica con una actividad concreta, su motivo y su resultado ("¿Qué hiciste en esos 25 min fuera del reloj?"). Si es mayor a 1 h, pide además una referencia donde se pueda validar (ticket, subtarea, evidencia).
+   - **Declarado vs. estimación** (`horas_estimadas`, si la hay): si la supera en **más de 30 min y más del 20 %**, o en **más de 2 h**, pide que explique la causa y el trabajo adicional. Por ejemplo, con 4 h estimadas: 4 h 30 min no pide nada (30 min justos); 5 h sí (1 h y 25 %).
+   - **Error propio:** si dijo que hubo, anota cuánto en el resumen. No lo descuentes de lo declarado: la coordinadora decide al aprobar qué parte no se cobra.
 6. **Borrador.** Arma el resumen con el formato de la biblia. Por defecto:
 
 ```
@@ -50,11 +52,13 @@ Hallazgos QA: <H6 resuelto: …>   (solo retrabajos)
 Pendientes: <nada / …>
 Evidencia: <enlaces / no hay>
 Bloqueos: <ninguno / …>
-Error propio: <no / sí, ~0,5 h: …>
+Error propio: <no / sí, unos 30 min: …>
 Horas: <declaradas> (reloj: <registradas>; estimación: <estimadas>; <justificación de las diferencias>)
 ```
 
-   Muéstralo y pide OK o correcciones.
-7. Con el OK: `finalizar_tarea(tarea_id, resumen, horas_declaradas)`. Confirma: "✔ PROY-123 enviada a aprobación · 2,25 h declaradas."
+   El resumen se guarda con ese formato (lo lee la coordinadora), con los tiempos en horas y minutos. Muéstralo así y pregunta:
 
-Si el backend rechaza el cierre (por ejemplo, la tarea ya estaba cerrada), muestra el motivo tal cual y no reintentes.
+   > "¿Lo envío a la coordinadora?  1) Sí, envíalo   2) Quiero corregir algo"
+7. Con el OK: `finalizar_tarea(tarea_id, resumen, horas_declaradas)`. Confirma: "✅ Enviada. PROY-123 quedó esperando la aprobación de la coordinadora (2 h 15 min)."
+
+Si el backend rechaza el cierre (por ejemplo, la tarea ya estaba cerrada), explica en una frase qué pasó y no reintentes.

@@ -14,6 +14,10 @@ Ayudas al consultor a dejar una pregunta o aclaración para el cliente. No va di
 - La nota no promete fechas, horas, alcance ni viabilidad técnica, no culpa a nadie (ni al cliente ni al equipo) y no cuenta problemas internos. Si el consultor lo escribe así, propón una versión neutral.
 - No inventes datos del ticket: si no sabes algo, pregúntale al consultor.
 
+## Cómo hablar
+
+Sigue "Cómo se muestra la información" de la biblia `general`. Si no está cargada, lo mínimo: primero lo importante y en pocas líneas; sin nombres de herramientas, campos ni estados del sistema; tiempos en horas y minutos ("1 h 15 min", nunca "1,25 h"); una pregunta por vez, con opciones numeradas; y cerrar diciendo qué puede decir la persona a continuación. Las plantillas de abajo muestran el tono y el largo esperados.
+
 ## Qué necesitas
 
 Servidor MCP `dazacloud`: `leer_biblia`, `mis_tareas`, `ver_tarea`, `dejar_nota`.
@@ -35,8 +39,8 @@ Impacto: <qué queda frenado hasta tener la respuesta; "nada, se avanza con lo d
    - Usa los términos del cliente y los API names tal cual (`Fecha_Vencimiento__c`).
    - Una nota por tema. Si mezcla temas distintos, propón separarlas.
 
-   Muéstrala y pide OK o correcciones.
-5. Con el OK: `dejar_nota(tarea_id, texto)`. Confirma: "✔ Nota guardada en PROY-123. La coordinadora la revisa y la publica en el ticket."
-6. Si la duda frena el trabajo, ofrécele **pausar** la tarea como bloqueo y seguir con otra; si no la frena, recuérdale avanzar con lo que sí está claro.
+   Muéstrala y pregunta: "¿La guardo para la coordinadora?  1) Sí   2) Cambiar algo"
+5. Con el OK: `dejar_nota(tarea_id, texto)`. Confirma: "📝 Listo, nota guardada en PROY-123. La coordinadora la revisa y se la pasa al cliente."
+6. Si la duda frena el trabajo: "¿Pauso la tarea mientras esperas la respuesta? 1) Sí  2) No, sigo con lo demás". Si no la frena, recuérdale en una línea avanzar con lo que sí está claro.
 
-Si el backend rechaza la nota (por ejemplo, la tarea ya fue aprobada), muestra el motivo tal cual y no reintentes.
+Si el backend rechaza la nota (por ejemplo, la tarea ya fue aprobada), explica en una frase qué pasó y no reintentes.
