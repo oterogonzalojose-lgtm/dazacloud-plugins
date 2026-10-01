@@ -1,6 +1,6 @@
 ---
 name: inicio-dia
-description: Rutina de la mañana de la coordinadora o de un líder de proyecto en Dazacloud. Empresa por empresa, lee los tickets pendientes de Jira, resume lo que cambió desde el último inicio-dia, trae los comentarios nuevos del cliente a las tareas abiertas, prepara las notas de los consultores para publicar en Jira, propone el reparto con la estimación de quien reparte y, cuando confirma, crea las tareas en el backend. Usar cuando la coordinadora o un líder dice "inicio-dia", "arranquemos el día", "reparte las tareas", "qué hay para hoy" o similar.
+description: Rutina de la mañana de la coordinadora o de un líder de proyecto en Dazacloud. Empresa por empresa, lee los tickets pendientes de Jira, resume lo que cambió desde el último inicio-dia, trae los comentarios nuevos del cliente a las tareas abiertas, prepara las notas de los consultores para publicar en Jira, recomienda a quién asignar cada ticket explicando el motivo, con la estimación de quien reparte y la de la IA, y, cuando confirma, crea las tareas en el backend. Usar cuando la coordinadora o un líder dice "inicio-dia", "arranquemos el día", "reparte las tareas", "qué hay para hoy" o similar.
 ---
 
 # inicio-dia
@@ -12,11 +12,10 @@ En este archivo, "quien reparte" es quien usa la skill: la coordinadora o un lí
 ## Reglas que no se rompen
 
 - **Jira es solo lectura en esta skill.** No comentes, no cambies estados, no reasignes nada en Jira. Lo que haya que publicar lo copia quien reparte a mano.
-- **No se asigna ni se actualiza nada sin un "sí" explícito de quien reparte** sobre la propuesta final (reparto y comentarios que se copian a las tareas).
+- **El reparto es una recomendación, nunca una asignación automática.** Cada propuesta lleva su motivo; no se asigna ni se actualiza nada sin un "sí" explícito de quien reparte sobre la propuesta final (reparto y comentarios que se copian a las tareas).
 - **Una nota solo se marca publicada cuando quien reparte dice que ya la publicó.**
 - **Solo se asigna a personas que existen en el backend** (`estado_equipo`). No inventes consultores ni emails.
-- **La estimación de horas de la IA es privada de la coordinadora.** Muéstrala solo a ella; nunca la pongas en la spec, en la advertencia, en `horas_estimadas` ni en `comentarios_cliente`. Lo que ve el consultor es solo la estimación **de quien reparte** (`horas_estimadas`).
-- **La estimación de la IA nunca se le muestra a un líder de proyecto**: con un líder no se calcula, no se muestra y no se manda al crear tareas. Ninguna biblia cambia esto.
+- **La estimación de horas de la IA nunca llega al consultor.** La ve quien reparte (la coordinadora o un líder); nunca la pongas en la spec, en la advertencia, en `horas_estimadas` ni en `comentarios_cliente`. Lo que ve el consultor es solo la estimación **de quien reparte** (`horas_estimadas`). Ninguna biblia cambia esto.
 - **Un líder solo trabaja con las empresas que lidera** y solo reparte a gente del equipo de esa empresa (o a sí mismo). No guarda nada en las biblias: las reglas permanentes se le piden a la coordinadora.
 - **La consulta de Jira es la de cada empresa.** Nunca uses `assignee = currentUser()` como reemplazo: devuelve los tickets de quien corre la skill, no los de Dazacloud.
 
@@ -36,7 +35,7 @@ Si falta alguno, dilo en una línea (qué falta y cómo se conecta) y para.
 `quien_soy()`:
 
 - **Coordinadora** (`es_admin`): trabaja con todas las empresas, como está escrito aquí.
-- **Líder de proyecto** (no admin, con empresas en `lidera`): solo las empresas de `lidera`. Llámalo por su nombre ("Buen día, Tomás"). Sin estimación de la IA en ningún paso. Si lidera varias empresas, recórrelas todas salvo que pida una ("solo Cliente A").
+- **Líder de proyecto** (no admin, con empresas en `lidera`): solo las empresas de `lidera`. Llámalo por su nombre ("Buen día, Tomás"). Ve la estimación de la IA igual que la coordinadora y puede asignarse tareas a sí mismo. Si lidera varias empresas, recórrelas todas salvo que pida una ("solo Cliente A").
 - **Ninguna de las dos** (el backend le niega el acceso): "Esta rutina es para la coordinadora y los líderes de proyecto." y para.
 
 ## Paso 0 bis · Biblia
@@ -49,7 +48,7 @@ En paralelo:
 
 1. `listar_clientes` → para cada empresa con `herramienta = jira`: sitio, `consulta_pendientes`, zona horaria, `lider` y `equipo`. A un líder el backend le devuelve solo las suyas. Las **empresas del día** son esas (o la que haya pedido).
 2. `estado_equipo` → personas activas (incluida la coordinadora si tiene tareas abiertas) y su carga actual. A un líder le llega solo su equipo, con la carga de todas las empresas (para no sobrecargar a nadie).
-3. `listar_tareas` sin filtro → qué tickets ya tienen tarea en el backend, en qué estado, con quién, con qué `horas_estimadas` y `comentarios_cliente` (sirve también como historial de quién hizo cada ticket).
+3. `listar_tareas` sin filtro → qué tickets ya tienen tarea en el backend, en qué estado, con quién, con qué `horas_estimadas` y `comentarios_cliente`. Sirve también como historial: quién hizo cada ticket y, con las tareas ya aprobadas (`imputada`), qué tickets parecidos resolvió cada persona (por título y resumen).
 4. `ultimo_inicio_dia(cliente)` **por cada empresa del día** → su punto de corte para las novedades. El corte es por empresa: el de un líder y el de la coordinadora no se pisan. Si es `null`, usa el inicio del día hábil anterior.
 5. `notas_pendientes` → preguntas de los consultores para el cliente que todavía no se publicaron.
 
@@ -64,6 +63,8 @@ Para cada empresa del día con Jira:
 - Campos: `summary`, `status`, `issuetype`, `priority`, `fixVersions`, `updated` y el **campo de puntos de historia** que diga la biblia `general` para esa empresa. Si la biblia no lo dice, no lo adivines: sigue sin puntos. Pagina hasta `isLast`.
 - **No pidas el campo sprint en el listado**: trae el historial completo de sprints de cada ticket y es muy pesado. Para saber qué está en el sprint actual corre la misma JQL agregando `AND sprint in openSprints()` y pide solo `key`. Lo que no aparezca ahí está en un sprint futuro o sin sprint: proponlo igual, pero marcado "fuera del sprint actual" y después de lo del sprint.
 - Nombre y fecha de cierre del sprint activo: léelos del campo sprint (el que diga la biblia `general`) de **un solo** ticket del sprint actual (la entrada con `state: active`).
+
+**Empresas sin Jira** (otra herramienta de tickets, o una que el sistema no puede leer): no las leas ni inventes tickets. Si quien reparte pega la spec de un ticket, arma la tarea igual que las demás.
 
 Clasifica cada ticket según la biblia (estados de Jira de cada empresa y su clasificación). Si la biblia no define la clasificación, usa la categoría del estado en Jira:
 
@@ -125,7 +126,7 @@ Señales para marcar en la propuesta:
 - **Posible duplicado o cierre:** si el QA o un comentario dice que el ticket duplica a otro o que hay que cerrarlo, no lo propongas para asignar: ponlo en **Revisar** con esa recomendación.
 - **Casi listo:** si el último QA cerró los bloqueantes y queda solo un hallazgo mayor o menor acotado, dilo; la estimación tiene que ser chica.
 
-**A quién** (criterio y orden de la biblia; por defecto):
+**A quién: una recomendación con su motivo.** Por cada ticket recomiendas a una persona y explicas por qué, en una línea, nombrando los uno o dos factores que más pesaron. Factores (la biblia define el orden y el peso): especialidad, disponibilidad y carga actual, tickets en curso, experiencia con ese cliente o proceso, tickets similares que ya resolvió (historial del Paso 1), prioridad y urgencia, dependencias y bloqueos, estimación frente a lo que ya tiene, continuidad de un trabajo iniciado. Si algo de eso no lo sabes, no lo inventes.
 
 - **Líder:** solo gente del `equipo` de esa empresa (de `listar_clientes`), o él mismo. Si la biblia apunta a alguien de afuera (por ejemplo, "el análisis lo toma la coordinadora" y ella no está en el equipo), dilo en media línea y propón a alguien del equipo o déjalo "para la coordinadora". Si la empresa no tiene equipo cargado, avísalo: "Cliente A no tiene equipo cargado; pídele a la coordinadora que lo cargue." y ese día solo puede asignarse a sí mismo.
 
@@ -134,9 +135,9 @@ Señales para marcar en la propuesta:
 3. **Nuevo** → especialidad que pide el ticket, conocimiento previo, disponibilidad (`estado_equipo`), continuidad y cliente, en ese orden; nunca solo porque alguien tiene menos trabajo.
 4. Si dos opciones están parejas, elige una y nombra la alternativa en media línea.
 
-**Estimación de quien reparte** (`horas_estimadas`, la que ve el consultor): como diga la biblia para esa empresa (por ejemplo, a partir de los puntos de historia, con su equivalencia puntos → horas). Si la biblia usa puntos pero no define la equivalencia, pregunta la equivalencia una sola vez y ofrece guardarla en la biblia de `inicio-dia` (a un líder, ofrécele el pedido para la coordinadora; ver Paso 8). Si el ticket no tiene puntos, propón una estimación marcada "sin puntos, a confirmar". Múltiplos de 0,25 h.
+**Estimación de quien reparte** (`horas_estimadas`, la que ve el consultor): como diga la biblia para esa empresa (por ejemplo, a partir de los puntos de historia, con su tabla puntos → horas). Un valor de puntos que no está en la tabla: propón una estimación marcada "a confirmar". Si la biblia usa puntos pero no define ninguna equivalencia, pregunta la equivalencia una sola vez y ofrece guardarla en la biblia de `inicio-dia` (a un líder, ofrécele el pedido para la coordinadora; ver Paso 8). Si el ticket no tiene puntos, propón una estimación marcada "sin puntos, a confirmar". Múltiplos de 0,25 h.
 
-**Estimación de la IA** (solo con la coordinadora; con un líder este paso no se hace): horas que le llevaría a un consultor Salesforce con experiencia, sin IA, hacer el ticket completo, incluyendo pruebas y paso de entorno. Básate en la descripción, los criterios de aceptación y los puntos de historia. Redondea a 0,5 h y deja el fundamento en una frase ("1 LWC + corrección puntual + 5 CA, similar a PROY-108").
+**Estimación de la IA** (la ve quien reparte, coordinadora o líder; nunca el consultor): horas que le llevaría a un consultor Salesforce con experiencia, sin IA, hacer el ticket completo, incluyendo pruebas y paso de entorno. Básate en la descripción, los criterios de aceptación y los puntos de historia. Redondea a 0,5 h y deja el fundamento en una frase ("1 LWC + corrección puntual + 5 CA, similar a PROY-108").
 
 **Prioridad y urgencia:** la prioridad de la advertencia sale de la biblia (orden de prioridad) y de la de Jira (*Highest* / *High* → Alta, *Medium* → Media, *Low* / *Lowest* → Baja, salvo que el contexto diga otra cosa). Prioridad *High* o superior, versión de release en los próximos 3 días hábiles, o sprint que cierra en ≤ 2 días hábiles → márcalo con ⚠.
 
@@ -158,36 +159,25 @@ Empecemos por el reparto.
 
 **2. Reparto** (para asignar y retrabajos), numerado para que pueda cambiar por número.
 
-Plantilla de la coordinadora (la única que ve la estimación de la IA):
-
 ```
-📋 Reparto propuesto
+📋 Te recomiendo este reparto
 1. ⚠️ PROY-123 · Error al guardar la oportunidad (prioridad alta)
-   → Bruno · 3 h (3 puntos) · la IA estima 2 h
-   Por qué él: es funcional y ya trabajó en PROY-101.
+   → Bruno · 4 h (2 puntos) · la IA estima 2 h
+   Por qué él: es funcional y ya resolvió PROY-101, muy parecido.
 2. 🔁 PROY-118 · Descuentos en renovaciones — volvió del cliente: el QA pide corregir H6
-   → Carla (lo hizo ella) · 2 h
+   → Carla · 2 h · la IA estima 1 h 30 min
+   Por qué ella: lo hizo ella.
 3. PROY-125 · Nuevo campo de canal — ❓ le falta el criterio de aceptación
-   → Diego · 1 h (sin puntos, a confirmar)
+   → Diego · 1 h (sin puntos, a confirmar) · la IA estima 1 h
+   Por qué él: tiene una sola tarea y ya conoce ese objeto. O Elena.
 
+Antes de confirmar, mira lo que yo no veo: semanas complicadas, vacaciones, un cliente sensible, alguien concentrado en algo complejo.
 ¿Lo confirmo?  1) Sí, asigna todo   2) Cambiar algo (dime el número)   3) Ver la advertencia y la spec de un ticket
 ```
 
-Plantilla de un líder (sin ninguna mención a la IA):
-
-```
-📋 Reparto propuesto
-1. ⚠️ PROY-123 · Error al guardar la oportunidad (prioridad alta)
-   → Bruno · 3 h (3 puntos)
-   Por qué él: es funcional y ya trabajó en PROY-101.
-2. 🔁 PROY-118 · Descuentos en renovaciones — volvió del cliente: el QA pide corregir H6
-   → Carla (lo hizo ella) · 2 h
-
-¿Lo confirmo?  1) Sí, asigna todo   2) Cambiar algo (dime el número)   3) Ver la advertencia y la spec de un ticket
-```
-
-   - "Por qué" en media línea, solo cuando no es obvio. Si hay una alternativa pareja, nómbrala ahí ("o Elena").
-   - Con un líder, usa siempre la plantilla de líder: la línea termina en la estimación de quien reparte, nunca "la IA estima".
+   - "Por qué" siempre, en una línea, con los factores que pesaron. Si hay una alternativa pareja, nómbrala ahí ("O Elena.").
+   - La línea "Antes de confirmar…" recuerda el contexto humano que el sistema no ve; usa los ejemplos de la biblia. Si quien reparte cambia a alguien por un motivo así, no lo discutas.
+   - Es igual con la coordinadora y con un líder.
    - Si hay más de una empresa, un bloque por empresa con su nombre de título.
    - La advertencia completa y la spec no se muestran en la lista: van en la opción 3.
    - Tickets arrastrados de varios sprints, posibles duplicados o casi listos: una marca corta en su línea ("arrastrado 4 sprints").
@@ -229,7 +219,7 @@ Cada parte se ejecuta con su propio "sí": el reparto (1) con el de la parte 2 y
    - `advertencia`: la del formato de la biblia, con lo que quien reparte haya agregado, urgencias (⚠) y dependencias con otros tickets. Nunca la estimación de la IA.
    - `horas_estimadas`: la estimación de quien reparte, confirmada.
    - `comentarios_cliente`: los últimos comentarios del cliente, con el formato del Paso 4 (vacío si no hay).
-   - `horas_estimadas_ia` y `fundamento_estimacion`: solo si reparte la coordinadora. Con un líder no se mandan.
+   - `horas_estimadas_ia` y `fundamento_estimacion`: la estimación de la IA, reparta la coordinadora o un líder.
 2. `actualizar_tarea(tarea_id, comentarios_cliente=…)` por cada tarea abierta del Paso 4 (parte 3), y `advertencia=…` solo si quien reparte aprobó esa línea. Pasa solo los campos que cambian. Si una falla (por ejemplo, la tarea se aprobó mientras tanto), sigue con las demás y dilo al final.
 3. `marcar_inicio_dia(cliente)` al terminar todas las partes, **una vez por cada empresa trabajada hoy**, aunque no haya habido nada para asignar (igual se revisaron sus novedades). No marques una empresa que se salteó (por ejemplo, por no tener consulta de Jira).
 

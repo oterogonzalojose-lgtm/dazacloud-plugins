@@ -5,7 +5,7 @@ Skills de gestión de Dazacloud: `inicio-dia`, `aprobaciones`, `resumen-dia`, `r
 ## Quién lo usa
 
 - **La coordinadora** (admin): todas las empresas, todo el detalle, incluida la estimación de la IA, y es la única que cambia las biblias.
-- **Un líder de proyecto** (persona que lidera al menos una empresa): reparte, aprueba y ve horas, notas y bloqueos **solo de sus empresas**, y reparte solo a su equipo. No ve la estimación de la IA, no edita las biblias (las lee) y sus propias tareas las aprueba la coordinadora. Cada skill lo detecta sola al empezar (`quien_soy`).
+- **Un líder de proyecto** (persona que lidera al menos una empresa): reparte, aprueba y ve horas, notas y bloqueos **solo de sus empresas**, y reparte solo a su equipo. Ve la estimación de la IA y puede asignarse tareas a sí mismo; no edita las biblias (las lee) y sus propias tareas las aprueba la coordinadora. La estimación de la IA nunca le llega a un consultor. Cada skill lo detecta sola al empezar (`quien_soy`).
 
 Un consultor que no lidera ninguna empresa no puede usar este plugin (el backend le niega el acceso).
 

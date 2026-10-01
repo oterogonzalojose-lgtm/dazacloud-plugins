@@ -14,7 +14,7 @@ En este archivo, "quien coordina" es quien usa la skill: la coordinadora o un l�
 - **Solo lectura.** No se aprueba ni se corrige nada desde aquí; si ve un error en una tarea aprobada, dile que no se puede editar desde esta skill.
 - **Este reporte es interno.** Lleva nombres de consultores y resúmenes internos: no redactes con él nada para el cliente con esos datos. Si pide una versión para el cliente, arma solo fecha, ticket, texto para el cliente y horas facturables, sin consultor.
 - No compares a los consultores entre sí ni saques conclusiones de rendimiento: las horas son datos.
-- La estimación de la IA no aparece en el reporte, y **nunca se le muestra a un líder de proyecto**.
+- La estimación de la IA no aparece en el reporte.
 - Un líder ve solo las empresas que lidera y no guarda nada en las biblias: una regla permanente se le pide a la coordinadora (ofrécele redactar el pedido).
 
 ## Cómo hablar

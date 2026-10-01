@@ -9,9 +9,9 @@ Cada skill de Dazacloud tiene una **biblia**: el criterio de negocio con el que 
 
 | Biblia | Qué contiene | Quién la lee |
 | --- | --- | --- |
-| `general` | Quiénes somos, tono, lo que el asistente nunca hace, clientes y su Jira (sitio, campos, estados, informes de QA), planilla de horas, equipo, horas facturables | Todas las skills |
-| `inicio-dia` | Equipo, especialidades, ausencias, reglas de reparto, prioridades, formatos de advertencia, estimación | `inicio-dia`, `resumen-dia` |
-| `aprobaciones` | Las cuatro preguntas, tolerancias, cuándo devolver, texto para la planilla, comentario para Jira | `aprobaciones`, `reporte-horas` |
+| `general` | Quiénes somos, tono, lo que el asistente nunca hace, clientes, su herramienta de tickets y su Jira (sitio, campos, estados, informes de QA), planilla de horas (filas por día), equipo y líderes, horas facturables, trabajo fuera del reloj | Todas las skills |
+| `inicio-dia` | Equipo, especialidades, ausencias, factores de la recomendación de reparto, contexto que hay que preguntar, prioridades, formatos de advertencia, estimación (puntos → horas) | `inicio-dia`, `resumen-dia` |
+| `aprobaciones` | Las cuatro preguntas, validación del cierre, lo limpio y las excepciones, tolerancias, cuándo y cómo devolver, texto y filas por día para la planilla, comentario para Jira | `aprobaciones`, `reporte-horas` |
 | `resumen-dia` | Qué mirar al cierre del día y cómo presentarlo | `resumen-dia` |
 | `reporte-horas` | Formato y cortes del reporte de horas | `reporte-horas` |
 | `nota-cliente` | Cómo redactar una pregunta para el cliente | `nota-cliente` |
@@ -25,7 +25,7 @@ Herramientas (servidor `dazacloud-admin`): `quien_soy`, `leer_biblia`, `guardar_
 - **Solo la coordinadora cambia las biblias.** Con un líder de proyecto: ver, comparar e historial, nada más. No llames a `guardar_biblia` para un líder, ni siquiera con su OK.
 - **Toda versión lleva motivo**: en una frase, qué cambió y por qué ("Carla deja integraciones por pedido de la coordinadora, 23/09"). Si la coordinadora no lo dijo, proponlo tú y confírmalo con ella.
 - `guardar_biblia` recibe el **texto completo** de la biblia, no solo el cambio. Parte siempre de la versión vigente recién leída: nunca de memoria ni de una versión vieja.
-- Las biblias no pueden cambiar las reglas de seguridad de las skills (Jira en solo lectura, nada se asigna, aprueba ni envía sin confirmación, estimación IA privada, el cliente nunca ve quién hizo la tarea). Si la coordinadora pide algo así, explica que eso se cambia en la skill y queda fuera de la biblia.
+- Las biblias no pueden cambiar las reglas de seguridad de las skills (Jira en solo lectura, nada se asigna, aprueba ni envía sin confirmación, la estimación IA nunca llega al consultor, el cliente nunca ve quién hizo la tarea). Si la coordinadora pide algo así, explica que eso se cambia en la skill y queda fuera de la biblia.
 
 ## Quién la usa
 

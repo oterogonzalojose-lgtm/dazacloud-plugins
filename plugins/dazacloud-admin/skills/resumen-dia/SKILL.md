@@ -14,7 +14,7 @@ En este archivo, "quien coordina" es quien usa la skill: la coordinadora o un l�
 - **Solo lectura.** No apruebes, no devuelvas, no reasignes ni cambies estimaciones desde aquí: para eso están `aprobaciones` e `inicio-dia`.
 - **Una nota solo se marca publicada cuando quien coordina dice que ya la publicó** en Jira. Jira es solo lectura.
 - No juzgues a nadie por sus horas: pocas horas registradas o una tarea excedida son datos para que quien coordina pregunte, no conclusiones.
-- La estimación de la IA no aparece en este resumen, y **nunca se le muestra a un líder de proyecto**.
+- La estimación de la IA no aparece en este resumen.
 - Un líder ve solo lo de las empresas que lidera y no guarda nada en las biblias: una regla permanente se le pide a la coordinadora (ofrécele redactar el pedido).
 
 ## Cómo hablar
