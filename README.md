@@ -1,6 +1,11 @@
 # Plugins de DazaCloud
 
-Skills de Claude Code para los consultores de DazaCloud: `mis-tareas`, `inicio-tarea`, `pausar`, `nota-cliente` y `fin-tarea`.
+Skills de Claude Code para DazaCloud:
+
+- `dazacloud-consultor`: para los consultores. `mis-tareas`, `inicio-tarea`, `pausar`, `nota-cliente` y `fin-tarea`.
+- `dazacloud-admin`: para la coordinadora y los líderes de proyecto. `inicio-dia`, `aprobaciones`, `resumen-dia`, `reporte-horas` y `biblia`. Un consultor que no lidera ninguna empresa no puede usarlo.
+
+Lo de abajo es para el plugin de consultores; el de gestión se instala igual, cambiando el nombre del plugin.
 
 ## Instalación
 
@@ -43,3 +48,14 @@ claude plugin update dazacloud-consultor@dazacloud-plugins
 ```
 
 Después reinicia Claude Code.
+
+## Líderes de proyecto
+
+Un líder sigue siendo consultor en sus propias tareas: instala **los dos plugins** con **el mismo token**.
+
+```
+claude plugin install dazacloud-consultor@dazacloud-plugins
+claude plugin install dazacloud-admin@dazacloud-plugins
+```
+
+Si el token cambia, actualízalo en los dos con `/plugin configure dazacloud-consultor@dazacloud-plugins` y `/plugin configure dazacloud-admin@dazacloud-plugins`.

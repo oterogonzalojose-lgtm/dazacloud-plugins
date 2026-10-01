@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "dazacloud-admin": {
+      "type": "http",
+      "url": "https://web-production-52afc.up.railway.app/admin/mcp",
+      "headers": { "Authorization": "Bearer ${user_config.dazacloud_token}" }
+    }
+  }
+}

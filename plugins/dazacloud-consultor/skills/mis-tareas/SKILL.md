@@ -1,6 +1,6 @@
 ---
 name: mis-tareas
-description: Muestra las tareas abiertas que la coordinadora le asignó al consultor en DazaCloud (en curso, devueltas, sin iniciar, pausadas), con advertencias, horas acumuladas frente a la estimación y un aviso si alguna ya la superó. Usar cuando el consultor dice "mis tareas", "qué tengo", "qué me toca hoy", "qué tengo pendiente" o similar.
+description: Muestra las tareas abiertas asignadas al consultor en DazaCloud (en curso, devueltas, sin iniciar, pausadas), con advertencias, horas acumuladas frente a la estimación y un aviso si alguna ya la superó. Usar cuando el consultor dice "mis tareas", "qué tengo", "qué me toca hoy", "qué tengo pendiente" o similar.
 ---
 
 # mis-tareas
@@ -44,9 +44,9 @@ Servidor MCP `dazacloud`: `leer_biblia`, `mis_tareas`. Si no responde o da 401, 
 ```
 
 - **Devueltas:** son las pausadas cuya advertencia empieza con "Devuelta:". Muestra el motivo al lado.
-- Las advertencias de la coordinadora se muestran siempre, al lado de la tarea (recortadas a una línea; completas en `inicio-tarea`).
+- Las advertencias de quien asignó la tarea se muestran siempre, al lado de la tarea (recortadas a una línea; completas en `inicio-tarea`).
 - **Tiempo:** "<registradas> de <estimadas>" en horas y minutos si hay estimación; si no, "llevas <registradas>". Son el acumulado de cada tarea (el backend no separa por día): no muestres totales diarios ni horas de inicio.
-- Si `excede_estimacion` es true, marca "⚠️ te pasaste de lo estimado" y recuérdale al final, en una línea, que lo informe a la coordinadora antes de seguir con esa tarea.
+- Si `excede_estimacion` es true, marca "⚠️ te pasaste de lo estimado" y recuérdale al final, en una línea, que lo informe a quien coordina el proyecto antes de seguir con esa tarea.
 - Las pendientes de aprobación van en una sola línea con sus claves, sin horas.
 - Si hay tareas asignadas hace más de 5 días hábiles que todavía no se iniciaron, recuérdalo en una línea al final.
 

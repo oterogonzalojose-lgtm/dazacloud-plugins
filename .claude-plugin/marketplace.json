@@ -4,13 +4,18 @@
     "name": "DazaCloud"
   },
   "metadata": {
-    "description": "Plugins de DazaCloud para que los consultores gestionen sus tareas con Claude Code."
+    "description": "Plugins de DazaCloud para gestionar las tareas con Claude Code: consultores, coordinación y líderes de proyecto."
   },
   "plugins": [
     {
       "name": "dazacloud-consultor",
       "source": "./plugins/dazacloud-consultor",
       "description": "Skills de los consultores de DazaCloud: ver sus tareas, iniciarlas, pausarlas, dejar preguntas para el cliente y cerrarlas con resumen y horas."
+    },
+    {
+      "name": "dazacloud-admin",
+      "source": "./plugins/dazacloud-admin",
+      "description": "Skills de gestión de Dazacloud, para la coordinadora y los líderes de proyecto: reparto diario de tickets, aprobación de horas, resumen del día, reporte de horas y biblias. Un líder ve solo sus empresas y nunca la estimación de la IA."
     }
   ]
 }

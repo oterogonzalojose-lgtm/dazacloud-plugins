@@ -1,16 +1,16 @@
 ---
 name: fin-tarea
-description: Cierra una tarea en DazaCloud. Hace las preguntas guiadas, arma el resumen interno de lo hecho, propone las horas registradas para que el consultor las confirme o corrija, pide justificar las desviaciones frente al reloj y a la estimación, pregunta si hubo corrección de un error propio, y la envía a aprobación de la coordinadora. Usar cuando el consultor dice "fin-tarea", "terminé", "cerré PROY-123", "listo con…" o similar.
+description: Cierra una tarea en DazaCloud. Hace las preguntas guiadas, arma el resumen interno de lo hecho, propone las horas registradas para que el consultor las confirme o corrija, pide justificar las desviaciones frente al reloj y a la estimación, pregunta si hubo corrección de un error propio, y la envía a aprobación de quien coordina el proyecto (la coordinadora o el líder de ese cliente). Usar cuando el consultor dice "fin-tarea", "terminé", "cerré PROY-123", "listo con…" o similar.
 ---
 
 # fin-tarea
 
-Cierras la tarea del consultor con un resumen claro y sus horas. El resumen es **interno**: la coordinadora lo lee para aprobar las horas sin tener que llamar al consultor, y a partir de él redacta lo que ve el cliente.
+Cierras la tarea del consultor con un resumen claro y sus horas. El resumen es **interno**: quien coordina el proyecto (la coordinadora o el líder de ese cliente) lo lee para aprobar las horas sin tener que llamar al consultor, y a partir de él redacta lo que ve el cliente.
 
 ## Reglas que no se rompen
 
 - **Las horas las declara el consultor.** Propones las registradas por el reloj, pero el número final lo dice él.
-- **No envíes nada sin que el consultor apruebe el resumen y las horas.** Una vez enviada, la tarea queda en manos de la coordinadora y ya no se puede editar.
+- **No envíes nada sin que el consultor apruebe el resumen y las horas.** Una vez enviada, la tarea queda en manos de quien coordina el proyecto y ya no se puede editar.
 - No inventes trabajo, pruebas ni evidencia: el resumen se arma solo con lo que el consultor contó (y lo que haya hecho contigo en esta sesión). Si falta algo, queda escrito que falta.
 - Superar la estimación no es un error: se pide la causa, no se juzga.
 
@@ -40,7 +40,7 @@ Servidor MCP `dazacloud`: `leer_biblia`, `mis_tareas`, `ver_tarea`, `finalizar_t
    El consultor habla en horas y minutos; tú pasas a decimales solo al llamar a la herramienta (múltiplos de 0,25 h, máximo 24). Umbrales por defecto (la biblia manda):
    - **Declarado vs. reloj:** toda diferencia se justifica con una actividad concreta, su motivo y su resultado ("¿Qué hiciste en esos 25 min fuera del reloj?"). Si es mayor a 1 h, pide además una referencia donde se pueda validar (ticket, subtarea, evidencia).
    - **Declarado vs. estimación** (`horas_estimadas`, si la hay): si la supera en **más de 30 min y más del 20 %**, o en **más de 2 h**, pide que explique la causa y el trabajo adicional. Por ejemplo, con 4 h estimadas: 4 h 30 min no pide nada (30 min justos); 5 h sí (1 h y 25 %).
-   - **Error propio:** si dijo que hubo, anota cuánto en el resumen. No lo descuentes de lo declarado: la coordinadora decide al aprobar qué parte no se cobra.
+   - **Error propio:** si dijo que hubo, anota cuánto en el resumen. No lo descuentes de lo declarado: quien coordina el proyecto decide al aprobar qué parte no se cobra.
 6. **Borrador.** Arma el resumen con el formato de la biblia. Por defecto:
 
 ```
@@ -56,9 +56,9 @@ Error propio: <no / sí, unos 30 min: …>
 Horas: <declaradas> (reloj: <registradas>; estimación: <estimadas>; <justificación de las diferencias>)
 ```
 
-   El resumen se guarda con ese formato (lo lee la coordinadora), con los tiempos en horas y minutos. Muéstralo así y pregunta:
+   El resumen se guarda con ese formato (lo lee quien coordina el proyecto), con los tiempos en horas y minutos. Muéstralo así y pregunta:
 
-   > "¿Lo envío a la coordinadora?  1) Sí, envíalo   2) Quiero corregir algo"
-7. Con el OK: `finalizar_tarea(tarea_id, resumen, horas_declaradas)`. Confirma: "✅ Enviada. PROY-123 quedó esperando la aprobación de la coordinadora (2 h 15 min)."
+   > "¿Lo envío a aprobación?  1) Sí, envíalo   2) Quiero corregir algo"
+7. Con el OK: `finalizar_tarea(tarea_id, resumen, horas_declaradas)`. Confirma: "✅ Enviada. PROY-123 quedó esperando aprobación (2 h 15 min)."
 
 Si el backend rechaza el cierre (por ejemplo, la tarea ya estaba cerrada), explica en una frase qué pasó y no reintentes.

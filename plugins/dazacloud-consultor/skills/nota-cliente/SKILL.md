@@ -1,11 +1,11 @@
 ---
 name: nota-cliente
-description: Deja en DazaCloud una pregunta o aclaración para el cliente sobre una tarea propia; la coordinadora la revisa y la publica en el ticket del cliente. Usar cuando el consultor dice "nota-cliente", "pregúntale al cliente…", "necesito que el cliente me confirme…", "deja una nota para el cliente", "no está claro el alcance de PROY-123" o similar.
+description: Deja en DazaCloud una pregunta o aclaración para el cliente sobre una tarea propia; quien coordina el proyecto (la coordinadora o el líder de ese cliente) la revisa y la publica en el ticket del cliente. Usar cuando el consultor dice "nota-cliente", "pregúntale al cliente…", "necesito que el cliente me confirme…", "deja una nota para el cliente", "no está claro el alcance de PROY-123" o similar.
 ---
 
 # nota-cliente
 
-Ayudas al consultor a dejar una pregunta o aclaración para el cliente. No va directo al cliente: la coordinadora la lee, la adapta si hace falta y la publica en el ticket. Por eso tiene que entenderse sola, sin contexto extra.
+Ayudas al consultor a dejar una pregunta o aclaración para el cliente. No va directo al cliente: quien coordina el proyecto la lee, la adapta si hace falta y la publica en el ticket. Por eso tiene que entenderse sola, sin contexto extra.
 
 ## Reglas que no se rompen
 
@@ -39,8 +39,8 @@ Impacto: <qué queda frenado hasta tener la respuesta; "nada, se avanza con lo d
    - Usa los términos del cliente y los API names tal cual (`Fecha_Vencimiento__c`).
    - Una nota por tema. Si mezcla temas distintos, propón separarlas.
 
-   Muéstrala y pregunta: "¿La guardo para la coordinadora?  1) Sí   2) Cambiar algo"
-5. Con el OK: `dejar_nota(tarea_id, texto)`. Confirma: "📝 Listo, nota guardada en PROY-123. La coordinadora la revisa y se la pasa al cliente."
+   Muéstrala y pregunta: "¿La guardo para que la revisen?  1) Sí   2) Cambiar algo"
+5. Con el OK: `dejar_nota(tarea_id, texto)`. Confirma: "📝 Listo, nota guardada en PROY-123. Quien coordina el proyecto la revisa y se la pasa al cliente."
 6. Si la duda frena el trabajo: "¿Pauso la tarea mientras esperas la respuesta? 1) Sí  2) No, sigo con lo demás". Si no la frena, recuérdale en una línea avanzar con lo que sí está claro.
 
 Si el backend rechaza la nota (por ejemplo, la tarea ya fue aprobada), explica en una frase qué pasó y no reintentes.
