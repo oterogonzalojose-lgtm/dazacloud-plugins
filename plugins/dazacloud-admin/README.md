@@ -1,11 +1,11 @@
 # dazacloud-admin
 
-Skills de gestión de Dazacloud: `inicio-dia`, `aprobaciones`, `resumen-dia`, `reporte-horas` y `biblia`. Se conectan a `/admin/mcp` del backend.
+Skills de gestión de Dazacloud: `inicio-dia`, `aprobaciones`, `resumen-dia`, `reporte-horas`, `biblia` y `equipo`. Se conectan a `/admin/mcp` del backend.
 
 ## Quién lo usa
 
-- **La coordinadora** (admin): todas las empresas, todo el detalle, incluida la estimación de la IA, y es la única que cambia las biblias.
-- **Un líder de proyecto** (persona que lidera al menos una empresa): reparte, aprueba y ve horas, notas y bloqueos **solo de sus empresas**, y reparte solo a su equipo. Ve la estimación de la IA y puede asignarse tareas a sí mismo; no edita las biblias (las lee) y sus propias tareas las aprueba la coordinadora. La estimación de la IA nunca le llega a un consultor. Cada skill lo detecta sola al empezar (`quien_soy`).
+- **La coordinadora** (admin): todas las empresas, todo el detalle, incluida la estimación de la IA, y es la única que cambia las biblias y gestiona el equipo y los accesos (skill `equipo`: altas, tokens, bajas, líderes y equipos de cada empresa, empresas nuevas).
+- **Un líder de proyecto** (persona que lidera al menos una empresa): reparte, aprueba y ve horas, notas y bloqueos **solo de sus empresas**, y reparte solo a su equipo. Ve la estimación de la IA y puede asignarse tareas a sí mismo; no edita las biblias (las lee), no usa la skill `equipo` y sus propias tareas las aprueba la coordinadora. La estimación de la IA nunca le llega a un consultor. Cada skill lo detecta sola al empezar (`quien_soy`).
 
 Un consultor que no lidera ninguna empresa no puede usar este plugin (el backend le niega el acceso).
 

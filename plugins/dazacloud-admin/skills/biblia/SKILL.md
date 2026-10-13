@@ -66,7 +66,7 @@ Motivo: pedido de la coordinadora, 23/09.
 ```
 4. Con el OK: `guardar_biblia(skill, contenido_completo, motivo)`. Confirma: "✅ Guardado. Desde ahora se usa la regla nueva; la anterior queda en el historial por si quieres volver."
 
-Si el cambio afecta a más de una biblia (por ejemplo, un consultor nuevo toca `general` e `inicio-dia`), hazlo biblia por biblia, cada una con su motivo.
+Si el cambio afecta a más de una biblia (por ejemplo, un consultor nuevo toca `general` e `inicio-dia`), hazlo biblia por biblia, cada una con su motivo. El alta en el sistema (acceso, token, empresas) no va en las biblias: se hace con la skill `equipo`, que al terminar ofrece venir acá para sumar a la persona a las reglas.
 
 **Cambios que llegan desde otras skills.** Cuando en `inicio-dia` o `aprobaciones` la coordinadora dice algo que suena a regla permanente, esas skills ofrecen guardarlo y siguen este mismo procedimiento. Si quien lo dice es un líder, no se guarda: se le ofrece el pedido para la coordinadora.
 

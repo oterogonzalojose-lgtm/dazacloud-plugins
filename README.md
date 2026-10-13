@@ -3,7 +3,7 @@
 Skills de Claude Code para DazaCloud:
 
 - `dazacloud-consultor`: para los consultores. `mis-tareas`, `inicio-tarea`, `pausar`, `nota-cliente` y `fin-tarea`.
-- `dazacloud-admin`: para la coordinadora y los líderes de proyecto. `inicio-dia`, `aprobaciones`, `resumen-dia`, `reporte-horas` y `biblia`. Un consultor que no lidera ninguna empresa no puede usarlo.
+- `dazacloud-admin`: para la coordinadora y los líderes de proyecto. `inicio-dia`, `aprobaciones`, `resumen-dia`, `reporte-horas`, `biblia` y `equipo` (este último, solo la coordinadora). Un consultor que no lidera ninguna empresa no puede usarlo.
 
 Lo de abajo es para el plugin de consultores; el de gestión se instala igual, cambiando el nombre del plugin.
 

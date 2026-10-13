@@ -30,7 +30,9 @@ Servidor MCP `dazacloud`: `leer_biblia`, `mis_tareas`, `ver_tarea`, `finalizar_t
 
 1. `leer_biblia("fin-tarea")` y `leer_biblia("general")`: preguntas guiadas, formato del resumen, umbrales y qué no se factura. Mandan sobre lo de abajo, salvo en "Reglas que no se rompen".
 2. **Qué tarea.** La que está en curso. Si no hay ninguna en curso, pregunta entre las pausadas o no iniciadas (una línea cada una).
-3. `ver_tarea(tarea_id)`: spec, criterios de aceptación, advertencias (motivo del rechazo, si es retrabajo), `horas_estimadas`, `horas_registradas` y `horas_por_dia` (lo que marcó el reloj cada día, en los días del equipo).
+3. `ver_tarea(tarea_id)`: spec, criterios de aceptación, advertencias (motivo del rechazo, si es retrabajo), `horas_estimadas`, `horas_registradas`, `horas_por_dia` (lo que marcó el reloj cada día, en los días del equipo) y `horas_de_otros`.
+
+   **Tarea que venía de otra persona.** Si `horas_de_otros` es mayor que 0, la tarea se la reasignaron y parte del reloj lo trabajó quien la tenía antes. En el reloj del día y en la carga quedan a nombre de quien las trabajó; al aprobarse, la tarea entera (con esas horas) cuenta para quien la cerró en el reporte de horas. **El consultor confirma solo lo que trabajó él.** El reloj que le muestras es el suyo (`horas_registradas` menos `horas_de_otros`: las registradas y `horas_por_dia` son de la tarea entera, con las de todas las personas) y el umbral de declarado vs. reloj se mira con lo suyo. El de **declarado vs. estimación** se mira con el **total** (su parte + `horas_de_otros`), porque la estimación es de la tarea entera. `horas_por_dia` no separa por persona: en "Varios días" pregunta por todos los días de la tarea y aclárale que, si hay días que trabajó solo quien la tenía antes, puede decir "no sé": esa línea queda "no sé (lo trabajó quien la tenía antes)" y la completa quien aprueba. **Al enviar, en cambio, va el total de la tarea**: su parte confirmada + `horas_de_otros` (ver paso 7), así se factura todo lo trabajado. Avísalo en una línea al empezar: "Esta tarea la tenía otra persona antes y trabajó 1 h 30 min. Tú confirmas solo lo tuyo; al enviarla sumo esas horas, y la tarea entera queda a tu nombre en el reporte de horas cuando se apruebe." No nombres a la otra persona.
 4. **Qué hizo.** Lo que hay que saber está en las preguntas guiadas de la biblia (por defecto: qué se pidió y qué hizo; qué modificó exactamente —objetos, campos, clases, flows—; qué probó y con qué resultado; si se cumplió el objetivo y qué criterios de aceptación cubre; en retrabajos, qué hizo con cada hallazgo del QA y si el rechazo vino de un error propio; pendientes; evidencia; bloqueos; tiempo corrigiendo un error propio). **No las hagas todas juntas.** Arranca con una sola pregunta abierta:
 
    > "Cuéntame con tus palabras qué hiciste, qué escenarios probaste y cómo quedó. Si quedó algo pendiente, hubo algún bloqueo o parte del tiempo fue corregir un error tuyo, dilo también."
@@ -58,7 +60,7 @@ Servidor MCP `dazacloud`: `leer_biblia`, `mis_tareas`, `ver_tarea`, `finalizar_t
      Si no hay evidencia, no insistas: queda escrito "sin evidencia" y quien coordina el proyecto lo revisa.
 
      **El día del trabajo fuera del reloj cuenta como un día más** si no está en `horas_por_dia`. Si con él la tarea pasa a tener más de un día, va la línea "Por día" con ese día incluido: lo que hizo fuera del reloj ya es la línea de ese día. Para los días del reloj, si no los contó, haz ahora la pregunta de "Varios días" (paso 4) nombrando todos los días.
-   - **Declarado vs. estimación** (`horas_estimadas`, si la hay): si la supera en **más de 30 min y más del 20 %**, o en **más de 2 h**, pide que explique la causa y el trabajo adicional. Por ejemplo, con 4 h estimadas: 4 h 30 min no pide nada (30 min justos); 5 h sí (1 h y 25 %).
+   - **Declarado vs. estimación** (`horas_estimadas`, si la hay; si la tarea venía de otra persona, con el total de la tarea): si la supera en **más de 30 min y más del 20 %**, o en **más de 2 h**, pide que explique la causa y el trabajo adicional. Por ejemplo, con 4 h estimadas: 4 h 30 min no pide nada (30 min justos); 5 h sí (1 h y 25 %).
    - **Error propio:** si dijo que hubo, anota cuánto en el resumen. No lo descuentes de lo declarado: quien coordina el proyecto decide al aprobar qué parte no se cobra.
 6. **Borrador.** Arma el resumen con el formato de la biblia. Por defecto:
 
@@ -75,11 +77,12 @@ Fuera del reloj: <mar 29/09, 22:00 a 23:30 · 1 h 30 min · qué · por qué · 
 Bloqueos: <ninguno / …>
 Error propio: <no / sí, unos 30 min: …>
 Horas: <declaradas> (reloj: <registradas>; estimación: <estimadas>; <justificación de las diferencias>)
+Horas de antes: la tarea incluye además <horas_de_otros> de quien la tenía antes; total enviado: <total>   (solo si horas_de_otros > 0)
 ```
 
    El resumen se guarda con ese formato (lo lee quien coordina el proyecto), con los tiempos en horas y minutos. Muéstralo así y pregunta:
 
    > "¿Lo envío a aprobación?  1) Sí, envíalo   2) Quiero corregir algo"
-7. Con el OK: `finalizar_tarea(tarea_id, resumen, horas_declaradas)`. Confirma: "✅ Enviada. PROY-123 quedó esperando aprobación (2 h 15 min)."
+7. Con el OK: `finalizar_tarea(tarea_id, resumen, horas_declaradas)`. Si `horas_de_otros` es mayor que 0, `horas_declaradas` es el total: su parte + `horas_de_otros`, en cuartos de hora (si la suma no da un cuarto, propón el más cercano y confírmalo). Muéstraselo antes del OK, junto con la pregunta de enviar: "Envío 5 h: tus 3 h + 2 h de quien la tenía antes." En la línea "Horas:" del resumen van sus horas; el total, en la línea "Horas de antes". Confirma: "✅ Enviada. PROY-123 quedó esperando aprobación (2 h 15 min)."
 
 Si el backend rechaza el cierre (por ejemplo, la tarea ya estaba cerrada), explica en una frase qué pasó y no reintentes. Si lo rechaza porque las horas no van en cuartos de hora, propón el cuarto más cercano, confírmalo con el consultor y recién ahí vuelve a enviar.
