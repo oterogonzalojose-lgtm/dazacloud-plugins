@@ -21,6 +21,8 @@ En este archivo, "quien coordina" es quien usa la skill: la coordinadora o un l�
 
 Sigue "Cómo se muestra la información" de la biblia `general`. Si no está cargada, lo mínimo: primero lo importante y en pocas líneas; sin nombres de herramientas, campos ni estados del sistema; tiempos en horas y minutos ("1 h 15 min", nunca "1,25 h"); una pregunta por vez, con opciones numeradas; y cerrar diciendo qué puede decir la persona a continuación. Las plantillas de abajo muestran el tono y el largo esperados (los nombres son de ejemplo).
 
+**Días de la semana:** calcúlalos siempre a partir de la fecha (año incluido), nunca de memoria ni por cercanía con otra fecha. Si no puedes calcularlo con seguridad, pon solo la fecha ("11/10"). Ninguna biblia cambia esto.
+
 ## Qué necesitas
 
 Servidor MCP `dazacloud-admin`: `quien_soy`, `leer_biblia`, `reporte_horas`.
@@ -49,6 +51,7 @@ Por cliente
 ¿Quieres el detalle tarea por tarea o el Excel?  1) Detalle   2) Excel   3) Así está bien
 ```
 
+   - **Mes de aprobación vs. mes trabajado:** el reporte cuenta las tareas por **fecha de aprobación**, pero la planilla del cliente va por **día trabajado**: cada tarea del detalle trae sus días de planilla (fecha, horas y texto de cada día). Si algún día de planilla cae fuera del rango pedido, avísalo en una línea después de las dos primeras, sumando **solo las horas de esos días** (no las de toda la tarea): "⚠️ 3 tareas aprobadas en septiembre tienen días trabajados en agosto (6,5 h): en la planilla del cliente esas horas figuran en agosto." Y ofrece verlas en el detalle.
    - La tabla cruzada persona × cliente, solo si hay más de un cliente.
    - Si no hay filas, dilo en una línea con el rango usado y termina.
    - Las no facturables se muestran siempre (aunque sean 0): es lo que se decidió no cobrar al aprobar.

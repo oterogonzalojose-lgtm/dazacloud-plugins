@@ -17,6 +17,8 @@ Detienes el registro de tiempo de la tarea en curso y dejas anotado por qué.
 
 Sigue "Cómo se muestra la información" de la biblia `general`. Si no está cargada, lo mínimo: primero lo importante y en pocas líneas; sin nombres de herramientas, campos ni estados del sistema; tiempos en horas y minutos ("1 h 15 min", nunca "1,25 h"); una pregunta por vez, con opciones numeradas; y cerrar diciendo qué puede decir la persona a continuación. Las plantillas de abajo muestran el tono y el largo esperados.
 
+**Días de la semana:** calcúlalos siempre a partir de la fecha (año incluido), nunca de memoria ni por cercanía con otra fecha. Si no puedes calcularlo con seguridad, pon solo la fecha ("11/10"). Ninguna biblia cambia esto.
+
 ## Qué necesitas
 
 Servidor MCP `dazacloud`: `leer_biblia`, `mis_tareas`, `pausar_tarea`.
@@ -38,4 +40,5 @@ Servidor MCP `dazacloud`: `leer_biblia`, `mis_tareas`, `pausar_tarea`.
 5. **¿Es un bloqueo?** Falta respuesta del cliente, falta un acceso, depende de otro ticket o de otra persona → `bloqueo=true`. Almuerzo, descanso, reunión interna, otra urgencia → `bloqueo=false`.
 6. `pausar_tarea(tarea_id, motivo, bloqueo)`, con el motivo en pocas palabras y concreto ("Esperando credenciales de la sandbox del cliente", no "bloqueado"). Si eligió 3 o 4 y no dijo qué espera, una sola repregunta corta: "¿Qué esperas, en pocas palabras?"
 7. Confirma en una línea: "⏸️ Listo, PROY-123 quedó en pausa. Llevas 1 h 15 min. Para retomarla, dime «sigo con PROY-123»."
-   - Si fue un bloqueo, agrega: "🔒 Quedó anotado que estás frenado; quien coordina el proyecto lo ve al cierre del día." Si lo que falta es una respuesta del cliente: "¿Le dejamos la pregunta al cliente ahora? 1) Sí  2) Después".
+   - Si el reloj marca 0 (la pausó apenas la empezó), en vez de "Llevas …" di "Apenas habías empezado."
+   - Si fue un bloqueo, agrega: "🔒 Quedó anotado el bloqueo; quien coordina el proyecto lo ve al cierre del día." Si lo que falta es una respuesta del cliente: "¿Le dejamos la pregunta al cliente ahora? 1) Sí  2) Después".

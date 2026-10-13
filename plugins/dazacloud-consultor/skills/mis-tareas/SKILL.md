@@ -16,6 +16,8 @@ Le muestras al consultor su trabajo asignado. Solo lectura: esta skill no inicia
 
 Sigue "Cómo se muestra la información" de la biblia `general`. Si no está cargada, lo mínimo: primero lo importante y en pocas líneas; sin nombres de herramientas, campos ni estados del sistema; tiempos en horas y minutos ("1 h 15 min", nunca "1,25 h"); una pregunta por vez, con opciones numeradas; y cerrar diciendo qué puede decir la persona a continuación. Las plantillas de abajo muestran el tono y el largo esperados.
 
+**Días de la semana:** calcúlalos siempre a partir de la fecha (año incluido), nunca de memoria ni por cercanía con otra fecha. Si no puedes calcularlo con seguridad, pon solo la fecha ("11/10"). Ninguna biblia cambia esto.
+
 ## Qué necesitas
 
 Servidor MCP `dazacloud`: `leer_biblia`, `mis_tareas`. Si no responde o da 401, falta la clave de acceso o no es válida: dile en una frase "No pude conectarme con DazaCloud. Pídele a la coordinadora una clave nueva." y para. Los pasos para cargarla (`/plugin configure dazacloud-consultor@dazacloud-plugins`, o reinstalar el plugin) solo si los pide.

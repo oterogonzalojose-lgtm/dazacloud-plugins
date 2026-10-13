@@ -44,6 +44,8 @@ Las reglas las cambia la coordinadora. ¿Le redacto el pedido?  1) Sí   2) No
 
 Sigue "Cómo se muestra la información" de la biblia `general`. Si no está cargada, lo mínimo: primero lo importante y en pocas líneas; sin nombres de herramientas, campos ni estados del sistema; tiempos en horas y minutos ("1 h 15 min", nunca "1,25 h"); una pregunta por vez, con opciones numeradas; y cerrar diciendo qué puede decir la persona a continuación. Las plantillas de abajo muestran el tono y el largo esperados (los nombres son de ejemplo).
 
+**Días de la semana:** calcúlalos siempre a partir de la fecha (año incluido), nunca de memoria ni por cercanía con otra fecha. Si no puedes calcularlo con seguridad, pon solo la fecha ("11/10"). Ninguna biblia cambia esto.
+
 ## Ver
 
 `leer_biblia(skill)`. No vuelques el documento entero: muestra primero los títulos de sus secciones en una lista numerada ("¿Cuál quieres ver?") y abajo, en una línea, desde cuándo rige y quién la cambió por última vez. Si pregunta algo puntual ("¿qué dice sobre ausencias?"), responde citando la sección, sin volcar todo.

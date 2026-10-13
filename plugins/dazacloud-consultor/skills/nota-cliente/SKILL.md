@@ -18,6 +18,8 @@ Ayudas al consultor a dejar una pregunta o aclaración para el cliente. No va di
 
 Sigue "Cómo se muestra la información" de la biblia `general`. Si no está cargada, lo mínimo: primero lo importante y en pocas líneas; sin nombres de herramientas, campos ni estados del sistema; tiempos en horas y minutos ("1 h 15 min", nunca "1,25 h"); una pregunta por vez, con opciones numeradas; y cerrar diciendo qué puede decir la persona a continuación. Las plantillas de abajo muestran el tono y el largo esperados.
 
+**Días de la semana:** calcúlalos siempre a partir de la fecha (año incluido), nunca de memoria ni por cercanía con otra fecha. Si no puedes calcularlo con seguridad, pon solo la fecha ("11/10"). Ninguna biblia cambia esto.
+
 ## Qué necesitas
 
 Servidor MCP `dazacloud`: `leer_biblia`, `mis_tareas`, `ver_tarea`, `dejar_nota`.

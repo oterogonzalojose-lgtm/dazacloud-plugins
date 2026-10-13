@@ -17,6 +17,8 @@ Preparas al consultor para trabajar en una tarea y empiezas a registrar su tiemp
 
 Sigue "Cómo se muestra la información" de la biblia `general`. Si no está cargada, lo mínimo: primero lo importante y en pocas líneas; sin nombres de herramientas, campos ni estados del sistema; tiempos en horas y minutos ("1 h 15 min", nunca "1,25 h"); una pregunta por vez, con opciones numeradas; y cerrar diciendo qué puede decir la persona a continuación. Las plantillas de abajo muestran el tono y el largo esperados.
 
+**Días de la semana:** calcúlalos siempre a partir de la fecha (año incluido), nunca de memoria ni por cercanía con otra fecha. Si no puedes calcularlo con seguridad, pon solo la fecha ("11/10"). Ninguna biblia cambia esto.
+
 ## Qué necesitas
 
 Servidor MCP `dazacloud`: `leer_biblia`, `mis_tareas`, `ver_tarea`, `iniciar_tarea`. Si no responde o da 401, falta la clave de acceso o no es válida: dile en una frase "No pude conectarme con DazaCloud. Pídele a la coordinadora una clave nueva." y para. Los pasos para cargarla (`/plugin configure dazacloud-consultor@dazacloud-plugins`, o reinstalar el plugin) solo si los pide.
@@ -45,6 +47,15 @@ Servidor MCP `dazacloud`: `leer_biblia`, `mis_tareas`, `ver_tarea`, `iniciar_tar
 
 ¿Quieres ver el contexto completo o armamos un plan de pasos?  1) Contexto   2) Plan   3) Así está bien
 ```
+
+   **Si faltan los criterios de aceptación** (o el objetivo o el alcance), o la advertencia dice "información incompleta", la pregunta del final cambia:
+
+```
+Faltan los criterios de aceptación, así que no está claro cuándo queda listo.
+¿Qué hacemos?  1) Dejar la pregunta para el cliente   2) Armar un plan con lo que sí está claro   3) Ver el contexto
+```
+
+   Con 1, sigue con la nota para el cliente (lo que hace la skill `nota-cliente`, sin nombrarla) y después ofrece el plan con lo claro. En cualquier caso se avanza con lo que sí está definido y no se asume el alcance que falta.
 
    - El **contexto** (cómo funciona hoy, quién lo usa) y la spec completa van en la opción 1, no en la tarjeta.
    - **Estimación.** Si `horas_estimadas` viene vacía, la segunda línea dice solo "Llevas <horas_registradas>" (en horas y minutos). Si viene, recuérdale en una línea que si ve que va a necesitar más horas, lo informe a quien coordina el proyecto **antes** de continuar.

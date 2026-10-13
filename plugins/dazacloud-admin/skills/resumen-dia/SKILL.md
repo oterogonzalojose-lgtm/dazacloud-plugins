@@ -21,6 +21,8 @@ En este archivo, "quien coordina" es quien usa la skill: la coordinadora o un l�
 
 Sigue "Cómo se muestra la información" de la biblia `general`. Si no está cargada, lo mínimo: primero lo importante y en pocas líneas; sin nombres de herramientas, campos ni estados del sistema; tiempos en horas y minutos ("1 h 15 min", nunca "1,25 h"); una pregunta por vez, con opciones numeradas; y cerrar diciendo qué puede decir la persona a continuación. Las plantillas de abajo muestran el tono y el largo esperados (los nombres y tickets son de ejemplo).
 
+**Días de la semana:** calcúlalos siempre a partir de la fecha (año incluido), nunca de memoria ni por cercanía con otra fecha. Si no puedes calcularlo con seguridad, pon solo la fecha ("11/10"). Ninguna biblia cambia esto.
+
 ## Qué necesitas
 
 Servidor MCP `dazacloud-admin`: `quien_soy`, `leer_biblia`, `resumen_diario`, `marcar_nota_publicada`, `descartar_nota`.
@@ -45,12 +47,16 @@ Servidor MCP `dazacloud-admin`: `quien_soy`, `leer_biblia`, `resumen_diario`, `m
 ⏳ Esperan tu aprobación: PROY-120 (Ana, 2 h 15 min)
 ✅ Aprobadas hoy: PROY-115 (Diego, 3 h; se cobran 2 h 30 min)
 
+▶️ Trabajando ahora: Carla en PROY-125 (desde 16:20)
+
 Horas de hoy: Ana 6 h 30 min · Bruno 7 h · Carla 4 h 15 min · Diego sin horas
 ```
 
+   - **Trabajando ahora:** las tareas con el reloj corriendo (`en_curso`: tarea, consultor y desde cuándo, en la hora de quien coordina). Si arrancó otro día, dilo ("desde ayer 18:10"): puede ser un reloj olvidado.
+
    - **Lo frenado** primero: es lo único que puede trabar el día siguiente. Para cada uno, la acción posible en media frase ("¿se las pedimos?", "¿se la paso a otra persona mientras tanto?"), sin ejecutarla.
    - **Pasadas de lo estimado:** tiempo registrado contra la estimación de quien repartió y si sigue en curso.
-   - **Horas de hoy:** tal cual las devuelve el backend, en horas y minutos. Con un líder, "el equipo" es el de sus empresas, no el de toda la biblia. Si alguien del equipo no aparece o no tiene horas, dilo sin suponer por qué (puede estar ausente; la biblia tiene las ausencias).
+   - **Horas de hoy:** tal cual las devuelve el backend, en horas y minutos. Con un líder, "el equipo" es el de sus empresas, no el de toda la biblia. Si alguien del equipo no aparece o no tiene horas, dilo sin suponer por qué (puede estar ausente; la biblia tiene las ausencias). Nunca digas "sin horas" de alguien que está en "Trabajando ahora": su reloj sigue corriendo ("Carla: reloj corriendo").
    - Si no hubo nada frenado ni pasado, arranca con "✅ Día tranquilo: nada frenado."
 
 5. Cierra con los siguientes pasos que correspondan, en una línea cada uno:

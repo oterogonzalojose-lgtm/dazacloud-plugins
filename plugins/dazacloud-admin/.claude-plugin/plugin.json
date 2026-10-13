@@ -1,8 +1,10 @@
 {
   "name": "dazacloud-admin",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Skills de gestión de Dazacloud, para la coordinadora y los líderes de proyecto: reparto diario de tickets (recomendado y con motivo), aprobación de horas con filas por día, resumen del día, reporte de horas y biblias. Un líder ve solo sus empresas.",
-  "author": { "name": "DazaCloud" },
+  "author": {
+    "name": "DazaCloud"
+  },
   "userConfig": {
     "dazacloud_token": {
       "type": "string",

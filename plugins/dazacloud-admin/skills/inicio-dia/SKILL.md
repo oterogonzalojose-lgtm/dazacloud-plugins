@@ -1,6 +1,6 @@
 ---
 name: inicio-dia
-description: Rutina de la mañana de la coordinadora o de un líder de proyecto en Dazacloud. Empresa por empresa, lee los tickets pendientes de Jira, resume lo que cambió desde el último inicio-dia, trae los comentarios nuevos del cliente a las tareas abiertas, prepara las notas de los consultores para publicar en Jira, recomienda a quién asignar cada ticket explicando el motivo, con la estimación de quien reparte y la de la IA, y, cuando confirma, crea las tareas en el backend. Usar cuando la coordinadora o un líder dice "inicio-dia", "arranquemos el día", "reparte las tareas", "qué hay para hoy" o similar.
+description: Rutina de la mañana de la coordinadora o de un líder de proyecto en Dazacloud. Empresa por empresa, lee los tickets pendientes de Jira (o los que le pegue quien reparte, si Jira no se puede leer), resume lo que cambió desde el último inicio-dia, trae los comentarios nuevos del cliente a las tareas abiertas, prepara las notas de los consultores para publicar en Jira, recomienda a quién asignar cada ticket explicando el motivo, con la estimación de quien reparte y la de la IA, y, cuando confirma, crea las tareas en el backend. Usar cuando la coordinadora o un líder dice "inicio-dia", "arranquemos el día", "reparte las tareas", "qué hay para hoy" o similar.
 ---
 
 # inicio-dia
@@ -23,12 +23,14 @@ En este archivo, "quien reparte" es quien usa la skill: la coordinadora o un lí
 
 Sigue "Cómo se muestra la información" de la biblia `general`. Si no está cargada, lo mínimo: primero lo importante y en pocas líneas; sin nombres de herramientas, campos ni estados del sistema; tiempos en horas y minutos ("1 h 15 min", nunca "1,25 h"); una pregunta por vez, con opciones numeradas; y cerrar diciendo qué puede decir la persona a continuación. Las plantillas de abajo muestran el tono y el largo esperados (los nombres y tickets son de ejemplo).
 
+**Días de la semana:** calcúlalos siempre a partir de la fecha (año incluido), nunca de memoria ni por cercanía con otra fecha. Si no puedes calcularlo con seguridad, pon solo la fecha ("11/10"). Ninguna biblia cambia esto.
+
 ## Qué necesitas
 
 - Servidor MCP `dazacloud-admin` (herramientas `quien_soy`, `leer_biblia`, `listar_clientes`, `estado_equipo`, `listar_tareas`, `ultimo_inicio_dia`, `notas_pendientes`, `crear_asignaciones`, `actualizar_tarea`, `marcar_nota_publicada`, `descartar_nota`, `marcar_inicio_dia`).
 - Conector de Atlassian (Jira) conectado en la cuenta de Claude de quien reparte.
 
-Si falta alguno, dilo en una línea (qué falta y cómo se conecta) y para.
+Si falta el servidor `dazacloud-admin`, dilo en una línea (qué falta y cómo se conecta) y para. Si falta el conector de Jira o no responde, dilo en una línea y sigue con las opciones de "Sin tickets de Jira" (Paso 2): el reparto se puede hacer igual con los tickets que pegue quien reparte.
 
 ## Paso 0 · Quién reparte
 
@@ -47,9 +49,9 @@ Si falta alguno, dilo en una línea (qué falta y cómo se conecta) y para.
 En paralelo:
 
 1. `listar_clientes` → para cada empresa con `herramienta = jira`: sitio, `consulta_pendientes`, zona horaria, `lider` y `equipo`. A un líder el backend le devuelve solo las suyas. Las **empresas del día** son esas (o la que haya pedido).
-2. `estado_equipo` → personas activas (incluida la coordinadora si tiene tareas abiertas) y su carga actual. A un líder le llega solo su equipo, con la carga de todas las empresas (para no sobrecargar a nadie).
+2. `estado_equipo` → personas activas (incluida la coordinadora si tiene tareas abiertas) y su carga actual: tareas abiertas, horas de reloj y `horas_estimadas_abiertas` (la suma de las horas estimadas de sus tareas abiertas: lo que ya tiene comprometido, aunque no haya empezado). A un líder le llega solo su equipo, con la carga de todas las empresas (para no sobrecargar a nadie).
 3. `listar_tareas` sin filtro → qué tickets ya tienen tarea en el backend, en qué estado, con quién, con qué `horas_estimadas` y `comentarios_cliente`. Sirve también como historial: quién hizo cada ticket y, con las tareas ya aprobadas (`imputada`), qué tickets parecidos resolvió cada persona (por título y resumen).
-4. `ultimo_inicio_dia(cliente)` **por cada empresa del día** → su punto de corte para las novedades. El corte es por empresa: el de un líder y el de la coordinadora no se pisan. Si es `null`, usa el inicio del día hábil anterior.
+4. `ultimo_inicio_dia(cliente)` **por cada empresa del día** → su punto de corte para las novedades. El corte es por empresa y por persona: cada gestor tiene el suyo, así que si la coordinadora corrió inicio-dia en una empresa, el líder igual ve todo lo que cambió desde **su** último corte (y al revés). Si la persona todavía no tiene corte propio en esa empresa, el backend devuelve el de la empresa; si es `null`, usa el inicio del día hábil anterior.
 5. `notas_pendientes` → preguntas de los consultores para el cliente que todavía no se publicaron.
 
 ## Paso 2 · Tickets de Jira
@@ -57,14 +59,33 @@ En paralelo:
 Para cada empresa del día con Jira:
 
 - `cloudId`: el recurso de `getAccessibleAtlassianResources` cuyo URL coincide con el `sitio` de la empresa.
-- JQL: la `consulta_pendientes` de la empresa, tal cual. **Si la empresa no tiene consulta propia**, no la inventes ni uses `currentUser()`: avisa en una línea y sigue con las demás (esa empresa se saltea hoy, también su corte).
-  - Líder: "⚠️ Cliente A no tiene cargada su consulta de Jira, así que hoy no puedo leer sus tickets. Pídele a la coordinadora que la cargue."
-  - Coordinadora: el mismo aviso, y ofrécele cargarla ahora con `editar_cliente(nombre, consulta_pendientes=…)`, mostrando la consulta y con su OK. Modelo: `assignee = <accountId de la persona a la que el cliente le asigna los tickets> AND statusCategory != Done ORDER BY priority DESC, updated DESC` (el accountId de quien corre la skill sale de `atlassianUserInfo`).
+- JQL: la `consulta_pendientes` de la empresa, tal cual. **Si la empresa no tiene consulta propia**, no la inventes ni uses `currentUser()`: sigue con "Sin tickets de Jira" (abajo).
 - Campos: `summary`, `status`, `issuetype`, `priority`, `fixVersions`, `updated` y el **campo de puntos de historia** que diga la biblia `general` para esa empresa. Si la biblia no lo dice, no lo adivines: sigue sin puntos. Pagina hasta `isLast`.
 - **No pidas el campo sprint en el listado**: trae el historial completo de sprints de cada ticket y es muy pesado. Para saber qué está en el sprint actual corre la misma JQL agregando `AND sprint in openSprints()` y pide solo `key`. Lo que no aparezca ahí está en un sprint futuro o sin sprint: proponlo igual, pero marcado "fuera del sprint actual" y después de lo del sprint.
 - Nombre y fecha de cierre del sprint activo: léelos del campo sprint (el que diga la biblia `general`) de **un solo** ticket del sprint actual (la entrada con `state: active`).
 
-**Empresas sin Jira** (otra herramienta de tickets, o una que el sistema no puede leer): no las leas ni inventes tickets. Si quien reparte pega la spec de un ticket, arma la tarea igual que las demás.
+**Sin tickets de Jira.** Pasa en tres casos: la empresa usa otra herramienta de tickets (o una que el sistema no puede leer), la empresa tiene Jira pero no tiene cargada su consulta, o el conector de Jira falta o no responde. No inventes tickets ni consultas. Avisa en una línea y pregunta qué hacer, con opciones numeradas:
+
+- Empresa con Jira sin consulta, con la **coordinadora**:
+
+  ```
+  ⚠️ Cliente A no tiene cargada su consulta de Jira, así que no puedo leer sus tickets.
+  ¿Qué hacemos?  1) Cargarla ahora (te muestro la consulta antes)  2) Me pegas tú los tickets de hoy  3) Saltear Cliente A hoy
+  ```
+
+  1. Cargarla con `editar_cliente(nombre, consulta_pendientes=…)`, mostrando la consulta y con su OK, y seguir leyendo Jira normalmente. Modelo: `assignee = <accountId de la persona a la que el cliente le asigna los tickets> AND statusCategory != Done ORDER BY priority DESC, updated DESC` (el accountId de quien corre la skill sale de `atlassianUserInfo`).
+- Empresa con Jira sin consulta, con un **líder**: el mismo aviso, con "Pídele a la coordinadora que la cargue." y las opciones 1) Me pegas tú los tickets de hoy  2) Saltear Cliente A hoy.
+- Conector de Jira que falta o no responde: "⚠️ No pude conectarme a Jira (<qué pasó, en pocas palabras>)." y las mismas dos opciones (pegar o saltear). Empresa sin Jira: directamente "pégame los tickets que quieras repartir".
+
+**Si pega los tickets**, arma el reparto con ellos igual que con los de Jira (Pasos 6 a 9), con estas diferencias:
+
+- Solo se trabaja con lo pegado: título, descripción, criterios, prioridad y puntos si los trae. Lo que no venga, no lo supongas (sin puntos → "sin puntos, a confirmar"; sin criterios → información incompleta).
+- No hay sprint, ni historial de sprints, ni novedades ni comentarios de Jira de esa empresa: el resumen no habla de sprint y la parte de novedades de esa empresa se salta. Si pega también comentarios del cliente, úsalos como novedades.
+- El corte (Paso 9) depende de por qué no hubo Jira:
+  - Empresa sin Jira, o con Jira pero sin consulta cargada: cuenta como trabajada y al final se marca su corte. Avísalo en el resumen en media línea: "las novedades de Jira de Cliente A no las revisé".
+  - El conector de Jira falló o no responde: **no se marca el corte**, así mañana aparecen las novedades del cliente que hoy no se pudieron leer. Dilo en el resumen: "no pude leer Jira; mañana te muestro las novedades desde el último corte".
+
+**Si elige saltearla**, esa empresa no se trabaja hoy y su corte no se marca: mañana sus novedades siguen apareciendo desde el corte anterior.
 
 Clasifica cada ticket según la biblia (estados de Jira de cada empresa y su clasificación). Si la biblia no define la clasificación, usa la categoría del estado en Jira:
 
@@ -126,7 +147,9 @@ Señales para marcar en la propuesta:
 - **Posible duplicado o cierre:** si el QA o un comentario dice que el ticket duplica a otro o que hay que cerrarlo, no lo propongas para asignar: ponlo en **Revisar** con esa recomendación.
 - **Casi listo:** si el último QA cerró los bloqueantes y queda solo un hallazgo mayor o menor acotado, dilo; la estimación tiene que ser chica.
 
-**A quién: una recomendación con su motivo.** Por cada ticket recomiendas a una persona y explicas por qué, en una línea, nombrando los uno o dos factores que más pesaron. Factores (la biblia define el orden y el peso): especialidad, disponibilidad y carga actual, tickets en curso, experiencia con ese cliente o proceso, tickets similares que ya resolvió (historial del Paso 1), prioridad y urgencia, dependencias y bloqueos, estimación frente a lo que ya tiene, continuidad de un trabajo iniciado. Si algo de eso no lo sabes, no lo inventes.
+**A quién: una recomendación con su motivo.** Por cada ticket recomiendas a una persona y explicas por qué, en una línea, nombrando los uno o dos factores que más pesaron. Factores (la biblia define el orden y el peso): especialidad, disponibilidad y carga actual, tickets en curso, experiencia con ese cliente o proceso, tickets similares que ya resolvió (historial del Paso 1), prioridad y urgencia, dependencias y bloqueos, estimación frente a lo que ya tiene comprometido, continuidad de un trabajo iniciado. Si algo de eso no lo sabes, no lo inventes.
+
+- **Lo comprometido** de cada persona es `horas_estimadas_abiertas` de `estado_equipo` (lo que suman las estimaciones de sus tareas abiertas), más lo que ya le vas proponiendo en este mismo reparto. No uses las horas de reloj para esto: una tarea recién asignada tiene 0 h de reloj y igual ocupa a la persona. Si la biblia fija un tope (de tareas o de horas), compáralo con eso. Los tickets bloqueados esperando al cliente no cuentan como carga activa, pero `horas_estimadas_abiertas` los incluye: resta las `horas_estimadas` de esas tareas, que salen de `listar_tareas` (Paso 1) cruzadas con la clasificación del Paso 2.
 
 - **Líder:** solo gente del `equipo` de esa empresa (de `listar_clientes`), o él mismo. Si la biblia apunta a alguien de afuera (por ejemplo, "el análisis lo toma la coordinadora" y ella no está en el equipo), dilo en media línea y propón a alguien del equipo o déjalo "para la coordinadora". Si la empresa no tiene equipo cargado, avísalo: "Cliente A no tiene equipo cargado; pídele a la coordinadora que lo cargue." y ese día solo puede asignarse a sí mismo.
 
@@ -135,7 +158,7 @@ Señales para marcar en la propuesta:
 3. **Nuevo** → especialidad que pide el ticket, conocimiento previo, disponibilidad (`estado_equipo`), continuidad y cliente, en ese orden; nunca solo porque alguien tiene menos trabajo.
 4. Si dos opciones están parejas, elige una y nombra la alternativa en media línea.
 
-**Estimación de quien reparte** (`horas_estimadas`, la que ve el consultor): como diga la biblia para esa empresa (por ejemplo, a partir de los puntos de historia, con su tabla puntos → horas). Un valor de puntos que no está en la tabla: propón una estimación marcada "a confirmar". Si la biblia usa puntos pero no define ninguna equivalencia, pregunta la equivalencia una sola vez y ofrece guardarla en la biblia de `inicio-dia` (a un líder, ofrécele el pedido para la coordinadora; ver Paso 8). Si el ticket no tiene puntos, propón una estimación marcada "sin puntos, a confirmar". Múltiplos de 0,25 h.
+**Estimación de quien reparte** (`horas_estimadas`, la que ve el consultor): como diga la biblia para esa empresa (por ejemplo, a partir de los puntos de historia, con su tabla puntos → horas). Un valor de puntos que no está en la tabla: propón una estimación marcada "a confirmar". Si la biblia usa puntos pero no define ninguna equivalencia, pregunta la equivalencia una sola vez y ofrece guardarla en la biblia de `inicio-dia` (a un líder, ofrécele el pedido para la coordinadora; ver Paso 8). Si el ticket no tiene puntos, propón una estimación marcada "sin puntos, a confirmar". **Si la biblia no tiene ningún criterio de estimación para esa empresa**, propón igual una estimación tuya marcada "a confirmar" en cada ticket (nunca la presentes como si fuera la regla) y menciónalo una vez en el reparto. Múltiplos de 0,25 h.
 
 **Estimación de la IA** (la ve quien reparte, coordinadora o líder; nunca el consultor): horas que le llevaría a un consultor Salesforce con experiencia, sin IA, hacer el ticket completo, incluyendo pruebas y paso de entorno. Básate en la descripción, los criterios de aceptación y los puntos de historia. Redondea a 0,5 h y deja el fundamento en una frase ("1 LWC + corrección puntual + 5 CA, similar a PROY-108").
 
@@ -152,10 +175,13 @@ Señales para marcar en la propuesta:
 ```
 ☀️ Buen día, <nombre>. Cliente A: el sprint 42 cierra el vie 02/10 (faltan 4 días hábiles).
 Hoy hay: 3 tickets para repartir · 1 retrabajo · 2 novedades del cliente · 1 nota para publicar.
-Equipo: Bruno 2 tareas · Carla libre · Diego 1 tarea.
+Equipo: Bruno 2 tareas (10 h estimadas) · Carla libre · Diego 1 tarea (3 h).
 
 Empecemos por el reparto.
 ```
+
+   - La línea del sprint va solo si se leyó el sprint activo en Jira. Si la empresa no usa sprints o no hay uno abierto, no la pongas. Si los tickets vienen pegados, en su lugar: "Cliente A: trabajo con los tickets que me pasaste; las novedades de Jira no las revisé." Si fue porque falló el conector, agrega "mañana te las muestro".
+   - En "Equipo", las horas son las estimadas de sus tareas abiertas (`horas_estimadas_abiertas`), en horas y minutos.
 
 **2. Reparto** (para asignar y retrabajos), numerado para que pueda cambiar por número.
 
@@ -221,9 +247,9 @@ Cada parte se ejecuta con su propio "sí": el reparto (1) con el de la parte 2 y
    - `comentarios_cliente`: los últimos comentarios del cliente, con el formato del Paso 4 (vacío si no hay).
    - `horas_estimadas_ia` y `fundamento_estimacion`: la estimación de la IA, reparta la coordinadora o un líder.
 2. `actualizar_tarea(tarea_id, comentarios_cliente=…)` por cada tarea abierta del Paso 4 (parte 3), y `advertencia=…` solo si quien reparte aprobó esa línea. Pasa solo los campos que cambian. Si una falla (por ejemplo, la tarea se aprobó mientras tanto), sigue con las demás y dilo al final.
-3. `marcar_inicio_dia(cliente)` al terminar todas las partes, **una vez por cada empresa trabajada hoy**, aunque no haya habido nada para asignar (igual se revisaron sus novedades). No marques una empresa que se salteó (por ejemplo, por no tener consulta de Jira).
+3. `marcar_inicio_dia(cliente)` al terminar todas las partes, **una vez por cada empresa trabajada hoy**, aunque no haya habido nada para asignar (igual se revisaron sus novedades). Marca el corte de quien reparte en esa empresa: el de los demás gestores no cambia. Cuenta como trabajada también la empresa sin Jira o sin consulta cargada que se repartió con tickets pegados (Paso 2). No marques una empresa que se salteó ni una cuyo Jira no se pudo leer porque falló el conector, aunque se haya repartido con tickets pegados.
 
-Después del reparto confirma en una línea por consultor ("✅ Asignado. Bruno: PROY-123 · Carla: PROY-118 · Diego: PROY-125") y pasa a la parte siguiente. Al final de todo: "✅ Listo el día. Mañana te muestro lo que cambie desde ahora."
+Después del reparto confirma en una línea por consultor ("✅ Asignado. Bruno: PROY-123 · Carla: PROY-118 · Diego: PROY-125") y pasa a la parte siguiente. Al final de todo: "✅ Listo el día. Mañana te muestro lo que cambie desde ahora." Si alguna empresa quedó sin corte marcado (se salteó o falló el conector de Jira), dilo en vez de eso: "✅ Listo el día. De Cliente A no pude leer Jira: mañana te muestro sus novedades desde el último corte."
 
 Si `crear_asignaciones` devuelve error (por ejemplo, un email que no existe), no reintentes a ciegas: explica en una frase qué falló y qué tareas sí quedaron creadas.
 

@@ -16,22 +16,24 @@ En este archivo, "quien aprueba" es quien usa la skill: la coordinadora o un lí
 - **El texto para el cliente nunca lleva** quién hizo la tarea, errores propios, problemas internos, horas ni la estimación. El cliente ve la planilla todos los días.
 - La estimación de la IA es referencia para quien aprueba (la coordinadora o un líder); nunca la menciones en el texto para el cliente, en el comentario para Jira ni en el motivo de una devolución (lo lee el consultor). Superarla no es motivo de devolución.
 - **Trabajo fuera del reloj sin evidencia no se devuelve solo por eso**: se marca para que quien aprueba lo revise.
-- **Un líder no aprueba ni devuelve sus propias tareas**: las aprueba la coordinadora. Tampoco guarda nada en las biblias.
+- **Un líder no aprueba ni devuelve sus propias tareas ni las de la coordinadora**: las aprueba la coordinadora. Tampoco guarda nada en las biblias. La coordinadora sí aprueba las suyas, con su OK como cualquier otra.
 
 ## Cómo hablar
 
 Sigue "Cómo se muestra la información" de la biblia `general`. Si no está cargada, lo mínimo: primero lo importante y en pocas líneas; sin nombres de herramientas, campos ni estados del sistema; tiempos en horas y minutos ("1 h 15 min", nunca "1,25 h"); una pregunta por vez, con opciones numeradas; y cerrar diciendo qué puede decir la persona a continuación. Las plantillas de abajo muestran el tono y el largo esperados (los nombres y tickets son de ejemplo).
 
+**Días de la semana:** calcúlalos siempre a partir de la fecha (año incluido), nunca de memoria ni por cercanía con otra fecha. Si no puedes calcularlo con seguridad, pon solo la fecha ("11/10"). Ninguna biblia cambia esto.
+
 ## Qué necesitas
 
-Servidor MCP `dazacloud-admin`: `quien_soy`, `leer_biblia`, `pendientes_aprobacion`, `aprobar_tarea`, `devolver_tarea`. El conector de Atlassian es opcional (para releer el ticket o el último QA).
+Servidor MCP `dazacloud-admin`: `quien_soy`, `leer_biblia`, `pendientes_aprobacion`, `notas_pendientes`, `aprobar_tarea`, `devolver_tarea`. El conector de Atlassian es opcional (para releer el ticket o el último QA).
 
 ## Paso 0 · Quién aprueba
 
 `quien_soy()`:
 
 - **Coordinadora** (`es_admin`): todo como está escrito aquí.
-- **Líder de proyecto** (no admin, con empresas en `lidera`): solo tareas de las empresas de `lidera` (el backend ya filtra). Llámalo por su nombre. Ve la estimación de la IA igual que la coordinadora. Sus propias tareas no se ofrecen para aprobar (ver Paso 1).
+- **Líder de proyecto** (no admin, con empresas en `lidera`): solo tareas de las empresas de `lidera` (el backend ya filtra). Llámalo por su nombre. Ve la estimación de la IA igual que la coordinadora. Sus propias tareas y las de la coordinadora no se ofrecen para aprobar (ver Paso 1).
 - **Ninguna de las dos** (el backend le niega el acceso): "Aprobar es para la coordinadora y los líderes de proyecto." y para.
 
 ## Paso 0 bis · Biblia
@@ -42,7 +44,9 @@ Servidor MCP `dazacloud-admin`: `quien_soy`, `leer_biblia`, `pendientes_aprobaci
 
 `pendientes_aprobacion` (cada tarea trae la spec, el resumen del consultor y `horas_por_dia`: lo que marcó el reloj cada día). Si está vacía, dilo en una línea ("✅ No hay nada para aprobar.") y termina.
 
-**Tareas propias de un líder** (el consultor de la tarea es él mismo, por email): no llevan ficha ni opciones. Van juntas al final de la bandeja, una línea cada una: "⏳ PROY-130 es tuya: la aprueba la coordinadora." No las cuentes en "para aprobar". Si pide aprobar una igual, explícale en una línea que la aprueba la coordinadora.
+**Tareas que aprueba la coordinadora** (con un líder: las que vienen con `aprueba_coordinadora: true`, que son las suyas y las de la coordinadora): no llevan ficha ni opciones. Van juntas al final de la bandeja, una línea cada una: "⏳ PROY-130 es tuya: la aprueba la coordinadora." o "⏳ PROY-131 (de una coordinadora): la aprueba la coordinadora." No las cuentes en "para aprobar". Si pide aprobar una igual, explícale en una línea que la aprueba la coordinadora. Si el backend todavía no trae ese dato, usa el email: la tarea es suya si el consultor es él mismo.
+
+**Tareas propias de la coordinadora** (ella es admin; el consultor de la tarea es ella misma): se revisan y se aprueban como las demás, con su OK. En el lote o en la ficha, en lugar del nombre del consultor va "— tuya" ("• PROY-140 · Propuesta de solución — tuya · cobrar 3 h · «…»").
 
 Empieza con una línea de conteo: "Tienes 3 para aprobar: 2 están limpias y 1 tiene algo para mirar."
 
@@ -70,6 +74,8 @@ Para el cliente: mié 23/09 · 1 h 30 min «Despliegue del ajuste de descuentos�
 ```
 
 - El ícono del título dice cómo viene: ✅ limpia, ⚠️ tiene algo para mirar.
+- **Notas sin publicar:** si la tarea tiene notas para el cliente sin publicar (el conteo viene en la tarea; el texto, en `notas_pendientes`), agrega "📝 Tiene 1 nota para el cliente sin publicar" con la pregunta en media línea. Una tarea así no va al lote de limpias: puede haber algo abierto con el cliente.
+- **Comentarios del cliente:** si la tarea tiene comentarios del cliente que tocan lo que se cierra (un pedido nuevo, un rechazo), una línea "💬 El cliente comentó: <lo último, resumido>"; el resto, en 5) Ver el detalle.
 - "Hizo" es el resumen del consultor en una frase. El resumen completo, los criterios de aceptación y la estimación de la IA ("la IA estimaba 1 h 30 min") van en **5) Ver el detalle**, no en la ficha.
 - "Para el cliente" lleva las filas por día (fecha, horas y texto), en una línea si entran. Con un solo día, solo el texto: «Ajuste de validación de pagos internacionales».
 - Si hay tiempo que no se le cobra al cliente, dilo en palabras: "Propongo cobrar 45 min de 1 h: 15 min fueron corregir un error propio."
@@ -79,12 +85,13 @@ Para el cliente: mié 23/09 · 1 h 30 min «Despliegue del ajuste de descuentos�
 **Chequeo** (criterios de la biblia; por defecto):
 
 - **Las cuatro preguntas:** ¿se sabe qué hizo?, ¿se entiende por qué tomó ese tiempo?, ¿se puede comprobar el resultado?, ¿las horas son facturables? Marca la que no se cumpla.
-- **Declaradas vs. estimación de quien repartió** (`horas_estimadas`): desviación de menos de 30 min, nada. De **más de 30 min y más del 20 %**, o de **más de 2 h**: ¿el resumen explica la causa y el trabajo adicional? Si no, márcalo.
+- **Declaradas vs. estimación de quien repartió** (`horas_estimadas`): solo cuenta lo que la **supera**; quedar por debajo no se marca ni la vuelve excepción. Exceso de menos de 30 min, nada. De **más de 30 min y más del 20 %**, o de **más de 2 h**: ¿el resumen explica la causa y el trabajo adicional? Si no, márcalo.
 - **Declaradas vs. registradas:** toda diferencia tiene que estar justificada con una actividad concreta. Si no, márcalo.
 - **IA:** solo como referencia para quien aprueba; no la uses para marcar nada.
 - **Cierre contra lo pedido, punto por punto:** compara lo que cuenta el consultor con cada criterio de aceptación de la spec y con lo que pide el ticket (en retrabajos, con cada hallazgo bloqueante del QA). Marca en la ficha solo lo que no aparece, quedó a medias o no tiene prueba, nombrando el criterio. No des por cumplido lo que el resumen no dice.
 - **Trabajo fuera del reloj** (declaró más de lo que marcó el reloj): es una excepción. Tiene que traer cuándo, cuánto, qué, por qué no quedó en el reloj y evidencia si la hay. Si falta la evidencia: "sin evidencia, a revisar" (no es devolución). Si faltan los otros datos, propón devolver pidiéndolos.
 - Si algo no cierra, propón **devolver** con un motivo concreto de la lista de la biblia.
+- **Cierre vago que quien aprueba quiere aprobar igual** (por ejemplo, un resumen de una palabra): aprobar es su decisión, pero avísale en una línea que el texto para el cliente va a salir del ticket (título, spec y criterios) y no del cierre, y sugiérele pedirle al consultor el cierre completo (opción 4, devolver). Si aprueba igual, el texto para el cliente describe solo lo que pide el ticket, sin afirmar pruebas, avances ni resultados que nadie contó, y se lo muestras antes del OK.
 
 **Horas no facturables** (propuesta): si el resumen menciona corrección de un error propio, retrabajo por implementación incorrecta, aprendizaje de algo que el consultor debería saber, esperas sin trabajo u otra causa no facturable de la biblia `general`, propone ese tiempo como no facturable (el que declaró el consultor, o una estimación marcada "a confirmar" si no lo dijo) y explica el motivo en media línea. Si no menciona nada así, 0. Múltiplos de 0,25 h, entre 0 y las horas finales.
 
