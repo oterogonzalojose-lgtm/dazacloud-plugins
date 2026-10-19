@@ -16,7 +16,7 @@ En este archivo, "quien aprueba" es quien usa la skill: la coordinadora o un lí
 - **El texto para el cliente nunca lleva** quién hizo la tarea, errores propios, problemas internos, horas ni la estimación. El cliente ve la planilla todos los días.
 - La estimación de la IA es referencia para quien aprueba (la coordinadora o un líder); nunca la menciones en el texto para el cliente, en el comentario para Jira ni en el motivo de una devolución (lo lee el consultor). Superarla no es motivo de devolución.
 - **Trabajo fuera del reloj sin evidencia no se devuelve solo por eso**: se marca para que quien aprueba lo revise.
-- **Un líder no aprueba ni devuelve sus propias tareas ni las de la coordinadora**: las aprueba la coordinadora. Tampoco guarda nada en las biblias. La coordinadora sí aprueba las suyas, con su OK como cualquier otra.
+- **Un líder no aprueba ni devuelve las tareas de la coordinadora**: esas las aprueba ella. Sus propias tareas sí las aprueba él, con su OK como cualquier otra (igual que la coordinadora las suyas). Tampoco guarda nada en las biblias.
 
 ## Cómo hablar
 
@@ -33,7 +33,7 @@ Servidor MCP `dazacloud-admin`: `quien_soy`, `leer_biblia`, `pendientes_aprobaci
 `quien_soy()`:
 
 - **Coordinadora** (`es_admin`): todo como está escrito aquí.
-- **Líder de proyecto** (no admin, con empresas en `lidera`): solo tareas de las empresas de `lidera` (el backend ya filtra). Llámalo por su nombre. Ve la estimación de la IA igual que la coordinadora. Sus propias tareas y las de la coordinadora no se ofrecen para aprobar (ver Paso 1).
+- **Líder de proyecto** (no admin, con empresas en `lidera`): solo tareas de las empresas de `lidera` (el backend ya filtra). Llámalo por su nombre. Ve la estimación de la IA igual que la coordinadora. Sus propias tareas las aprueba él como las demás; las de la coordinadora no se ofrecen para aprobar (ver Paso 1).
 - **Ninguna de las dos** (el backend le niega el acceso): "Aprobar es para la coordinadora y los líderes de proyecto." y para.
 
 ## Paso 0 bis · Biblia
@@ -44,9 +44,9 @@ Servidor MCP `dazacloud-admin`: `quien_soy`, `leer_biblia`, `pendientes_aprobaci
 
 `pendientes_aprobacion` (cada tarea trae la spec, el resumen del consultor y `horas_por_dia`: lo que marcó el reloj cada día). Si está vacía, dilo en una línea ("✅ No hay nada para aprobar.") y termina.
 
-**Tareas que aprueba la coordinadora** (con un líder: las que vienen con `aprueba_coordinadora: true`, que son las suyas y las de la coordinadora): no llevan ficha ni opciones. Van juntas al final de la bandeja, una línea cada una: "⏳ PROY-130 es tuya: la aprueba la coordinadora." o "⏳ PROY-131 (de una coordinadora): la aprueba la coordinadora." No las cuentes en "para aprobar". Si pide aprobar una igual, explícale en una línea que la aprueba la coordinadora. Si el backend todavía no trae ese dato, usa el email: la tarea es suya si el consultor es él mismo.
+**Tareas que aprueba la coordinadora** (con un líder: las que vienen con `aprueba_coordinadora: true`, que son las de la coordinadora): no llevan ficha ni opciones. Van juntas al final de la bandeja, una línea cada una: "⏳ PROY-131 (de la coordinadora): la aprueba ella." No las cuentes en "para aprobar". Si pide aprobar una igual, explícale en una línea que la aprueba la coordinadora.
 
-**Tareas propias de la coordinadora** (ella es admin; el consultor de la tarea es ella misma): se revisan y se aprueban como las demás, con su OK. En el lote o en la ficha, en lugar del nombre del consultor va "— tuya" ("• PROY-140 · Propuesta de solución — tuya · cobrar 3 h · «…»").
+**Tareas propias de quien aprueba** (la coordinadora, o un líder en las empresas que lidera; el consultor de la tarea es él mismo): se revisan y se aprueban como las demás, con su OK. En el lote o en la ficha, en lugar del nombre del consultor va "— tuya" ("• PROY-140 · Propuesta de solución — tuya · cobrar 3 h · «…»").
 
 Empieza con una línea de conteo: "Tienes 3 para aprobar: 2 están limpias y 1 tiene algo para mirar."
 
