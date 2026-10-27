@@ -22,7 +22,7 @@ Sigue "Cómo se muestra la información" de la biblia `general`. Si no está car
 
 ## Qué necesitas
 
-Servidor MCP `dazacloud-admin` (herramientas `quien_soy`, `leer_biblia`, `listar_personas`, `alta_persona`, `rotar_token`, `desactivar_persona`, `reactivar_persona`, `listar_clientes`, `alta_cliente`, `editar_cliente`, `listar_tareas`, `estado_equipo`, `reasignar_tarea`). Si falta el servidor, dilo en una línea y para. Si falta una herramienta puntual (por ejemplo, la lista de personas), dilo en una línea y haz lo que se pueda con las demás.
+Servidor MCP `dazacloud-admin` (herramientas `quien_soy`, `leer_biblia`, `listar_personas`, `alta_persona`, `rotar_token`, `desactivar_persona`, `reactivar_persona`, `listar_clientes`, `alta_cliente`, `editar_cliente`, `revisar_planilla`, `listar_tareas`, `estado_equipo`, `reasignar_tarea`). Si falta el servidor, dilo en una línea y para. Si falta una herramienta puntual (por ejemplo, la lista de personas), dilo en una línea y haz lo que se pueda con las demás.
 
 ## Paso 0 · Quién la usa y biblia
 
@@ -175,7 +175,7 @@ Equipo: Bruno, Carla, Diego → Bruno, Carla, Diego, Elena
    - Herramienta de tickets (Jira u otra). Por defecto, Jira.
    - Zona horaria del cliente (ciudad o país; tú la traduces al nombre estándar, por ejemplo "Madrid" → Europe/Madrid, y la muestras en el resumen).
    - Si es Jira: el sitio (la dirección de su Jira: la parte del enlace que va antes de la primera barra) y la consulta de tickets pendientes. Si no tiene la consulta, propón el modelo `assignee = <id de la persona a la que el cliente le asigna los tickets> AND statusCategory != Done ORDER BY priority DESC, updated DESC` y aclara que el id lo da Jira; si no lo tiene, queda para después.
-   - Planilla de horas: el ID del Google Sheet (lo que va entre `/d/` y `/edit` en el enlace), que tiene que estar compartido como editor con la cuenta de servicio del sistema. Si todavía no lo tiene, queda para después.
+   - Planilla de horas: el enlace del Google Sheet (o su ID). Antes de cargarla, revísala como en «Planilla de horas» (abajo). Si todavía no la tiene, queda para después.
    - Líder y equipo, si ya los sabe.
 2. Resumen y confirmación, marcando lo que queda pendiente:
 
@@ -191,6 +191,29 @@ Líder: Tomás · Equipo: Bruno, Carla
 
 3. Con el "sí": `alta_cliente(nombre, herramienta, sitio, zona_horaria, sheet_id, consulta_pendientes, lider_email, equipo)`, sin los datos pendientes.
 4. Confirma en una línea y cierra con lo pendiente: "✅ Cliente C quedó dada de alta. Cuando tengas la planilla, dime «planilla de Cliente C» y la cargo." Lo pendiente se carga después con `editar_cliente`, con el mismo resumen y confirmación. Ofrece sumar la empresa a la biblia `general` (skill `biblia`): su herramienta, cómo se estima y su Jira.
+
+## Planilla de horas
+
+Para cargar o cambiar la planilla de una empresa ("cambia la planilla de Cliente C", "planilla de Cliente C"):
+
+1. Pide el enlace del Google Sheet (sirve copiarlo de la barra del navegador).
+2. `revisar_planilla(planilla=<el enlace>, cliente=<empresa>)` (sin `cliente` si la empresa todavía no existe). Según `estado`:
+   - **ok**: sigue al paso 3. Muestra el título y las pestañas que encontró, para que confirme que es la correcta. Si `pestana_del_mes.faltan` no está vacío, avísale antes de cargarla: "A la pestaña «Horas Octubre» le faltan estas columnas: ID DazaCloud. Agrégalas en la fila de títulos (con ese nombre exacto) o las horas no se van a escribir." Si la pestaña del mes no existe, no es problema: el sistema la crea al aprobar.
+   - **sin_acceso** o **solo_lectura**: la planilla todavía no está compartida como Editor con el sistema. Muestra el email de `cuenta` **completo, tal cual, en su propia línea** para que lo copie (nunca lo acortes ni lo tapes: no es secreto):
+
+     ```
+     📄 Falta compartir la planilla con el sistema
+     En Google Sheets: Compartir → pega este correo → rol Editor → desmarca «Notificar» → Compartir.
+
+     <cuenta>
+
+     Cuando lo hayas hecho, dime «listo» y la reviso de nuevo.
+     ```
+
+     Con "listo", vuelve a llamar a `revisar_planilla`. No la cargues hasta que dé ok.
+   - **sin_configurar** o **error**: dilo en una línea ("El sistema no pudo revisar la planilla ahora; avísale a Gonzalo") y no la cargues.
+3. Resumen y confirmación: "📄 Planilla de Cliente C: «<título>» (pestañas: …). ¿La cargo?  1) Sí  2) No". Si la empresa ya tenía otra, dilo: "Las próximas horas aprobadas se escriben en la nueva; lo ya escrito queda en la anterior."
+4. Con el "sí": `editar_cliente(nombre, sheet_id=<sheet_id que devolvió revisar_planilla>)` (o `alta_cliente` si es una empresa nueva).
 
 ## Si algo falla
 
