@@ -1,6 +1,6 @@
 ---
 name: fin-tarea
-description: Cierra una tarea en DazaCloud. Hace las preguntas guiadas, arma el resumen interno de lo hecho, propone las horas registradas para que el consultor las confirme o corrija, pide justificar las desviaciones frente al reloj y a la estimación (el trabajo fuera del reloj, con cuándo, qué, por qué y evidencia), pregunta qué se hizo cada día si fueron varios y si hubo corrección de un error propio, y la envía a aprobación de quien coordina el proyecto (la coordinadora o el líder de ese cliente). Usar cuando el consultor dice "fin-tarea", "terminé", "cerré PROY-123", "listo con…" o similar.
+description: Cierra una tarea en DazaCloud. Hace las preguntas guiadas, arma el resumen interno de lo hecho, propone las horas registradas para que el consultor las confirme o corrija, pide justificar las desviaciones frente al reloj y a la estimación (el trabajo fuera del reloj, con cuándo, qué, por qué y evidencia), pregunta qué se hizo cada día si fueron varios y si hubo corrección de un error propio, la envía a aprobación de quien coordina el proyecto (la coordinadora o el líder de ese cliente) y le deja listo el comentario para pegar en Jira. Usar cuando el consultor dice "fin-tarea", "terminé", "cerré PROY-123", "listo con…" o similar.
 ---
 
 # fin-tarea
@@ -25,6 +25,8 @@ Sigue "Cómo se muestra la información" de la biblia `general`. Si no está car
 ## Qué necesitas
 
 Servidor MCP `dazacloud`: `leer_biblia`, `mis_tareas`, `ver_tarea`, `finalizar_tarea`.
+
+Jira es solo lectura para el sistema: el comentario para Jira (paso 8) se le entrega al consultor para que lo pegue él.
 
 ## Pasos
 
@@ -84,5 +86,20 @@ Horas de antes: la tarea incluye además <horas_de_otros> de quien la tenía ant
 
    > "¿Lo envío a aprobación?  1) Sí, envíalo   2) Quiero corregir algo"
 7. Con el OK: `finalizar_tarea(tarea_id, resumen, horas_declaradas)`. Si `horas_de_otros` es mayor que 0, `horas_declaradas` es el total: su parte + `horas_de_otros`, en cuartos de hora (si la suma no da un cuarto, propón el más cercano y confírmalo). Muéstraselo antes del OK, junto con la pregunta de enviar: "Envío 5 h: tus 3 h + 2 h de quien la tenía antes." En la línea "Horas:" del resumen van sus horas; el total, en la línea "Horas de antes". Confirma: "✅ Enviada. PROY-123 quedó esperando aprobación (2 h 15 min)."
+8. **Comentario para Jira.** Enseguida, sin preguntar, arma el comentario para que el consultor lo pegue en el ticket (el sistema no escribe en Jira). Usa el formato de la biblia (`fin-tarea` o `general`); si no trae uno, este:
+
+```
+📋 Para Jira (cópialo y pégalo en PROY-123):
+
+@<quien reportó o pidió el cambio, si lo sabes> se realizaron los ajustes:
+- <cambio 1>
+- <cambio 2>
+Entorno: <el que contó el consultor>. Ya se puede validar.
+```
+
+   - Sale solo de lo que contó el consultor (Solución, Pruebas, Por día). En retrabajos con hallazgos del QA, una línea por hallazgo citando su número ("H6: …").
+   - Para el cliente: sin horas, sin errores propios, sin problemas internos, sin nombres del equipo ni el resumen interno tal cual.
+   - Si no sabe a quién mencionar o en qué entorno quedó, deja `@…` o `Entorno: …` para que lo complete, y díselo en una línea.
+   - Cierra: "Cuando se apruebe, el texto final queda también en tu historial (en el panel o diciéndome «qué hice en PROY-123»)."
 
 Si el backend rechaza el cierre (por ejemplo, la tarea ya estaba cerrada), explica en una frase qué pasó y no reintentes. Si lo rechaza porque las horas no van en cuartos de hora, propón el cuarto más cercano, confírmalo con el consultor y recién ahí vuelve a enviar.

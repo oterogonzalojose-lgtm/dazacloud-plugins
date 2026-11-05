@@ -1,6 +1,6 @@
 ---
 name: mis-tareas
-description: Muestra las tareas abiertas asignadas al consultor en DazaCloud (en curso, devueltas, sin iniciar, pausadas), con advertencias, horas acumuladas frente a la estimación y un aviso si alguna ya la superó. Usar cuando el consultor dice "mis tareas", "qué tengo", "qué me toca hoy", "qué tengo pendiente" o similar.
+description: Muestra las tareas abiertas asignadas al consultor en DazaCloud (en curso, devueltas, sin iniciar, pausadas), con advertencias, horas acumuladas frente a la estimación y un aviso si alguna ya la superó; y, si lo pide, su historial de tareas aprobadas con lo que hizo cada día y el texto para Jira. Usar cuando el consultor dice "mis tareas", "qué tengo", "qué me toca hoy", "qué tengo pendiente", "qué hice en PROY-123", "mi historial", "lo que hice la semana pasada" o similar.
 ---
 
 # mis-tareas
@@ -10,7 +10,7 @@ Le muestras al consultor su trabajo asignado. Solo lectura: esta skill no inicia
 ## Reglas que no se rompen
 
 - Solo lectura.
-- No muestres horas aprobadas ni tareas ya aprobadas. La única estimación que existe para el consultor es `horas_estimadas`.
+- **Nunca muestres horas aprobadas** (las que fija quien aprueba): una tarea aprobada figura como "Aprobada", sin la cantidad. Las tareas aprobadas solo aparecen en el historial, cuando el consultor lo pide. La única estimación que existe para el consultor es `horas_estimadas`.
 
 ## Cómo hablar
 
@@ -20,7 +20,7 @@ Sigue "Cómo se muestra la información" de la biblia `general`. Si no está car
 
 ## Qué necesitas
 
-Servidor MCP `dazacloud`: `leer_biblia`, `mis_tareas`. Si no responde o da 401, falta la clave de acceso o no es válida: dile en una frase "No pude conectarme con DazaCloud. Pídele a la coordinadora una clave nueva." y para. Los pasos para cargarla (`/plugin configure dazacloud-consultor@dazacloud-plugins`, o reinstalar el plugin) solo si los pide.
+Servidor MCP `dazacloud`: `leer_biblia`, `mis_tareas`, `mi_historial`. Si no responde o da 401, falta la clave de acceso o no es válida: dile en una frase "No pude conectarme con DazaCloud. Pídele a la coordinadora una clave nueva." y para. Los pasos para cargarla (`/plugin configure dazacloud-consultor@dazacloud-plugins`, o reinstalar el plugin) solo si los pide.
 
 ## Pasos
 
@@ -53,3 +53,30 @@ Servidor MCP `dazacloud`: `leer_biblia`, `mis_tareas`. Si no responde o da 401, 
 - Si hay tareas asignadas hace más de 5 días hábiles que todavía no se iniciaron, recuérdalo en una línea al final.
 
 Cierra con una sola línea sobre qué sigue, en palabras: "dime «empiezo PROY-125»" para arrancar o retomar, o "dime «terminé»" si la que está en curso ya está lista. No nombres las skills.
+
+## Historial: lo que ya se aprobó
+
+Cuando el consultor pregunta por trabajo ya aprobado ("¿qué hice en PROY-118?", "mi historial", "lo de la semana pasada", "necesito lo que puse en la tarea para pasarlo a Jira"):
+
+1. `mi_historial(dias, ticket)`: por defecto los últimos 30 días; con `ticket` si nombró uno. Trae, por tarea: su cierre, lo que marcó su reloj cada día, el texto de cada día que fue a la planilla del cliente y el comentario para Jira que se armó al aprobar.
+2. Si pidió un ticket, muestra esa tarea completa. Si no, la lista corta (una línea por tarea, la más reciente primero) y pregunta cuál quiere ver.
+
+```
+✅ PROY-118 · Validaciones en Cuenta — aprobada el 04/11
+
+Cada día
+   lun 03/11 · Ajuste de reglas de validación (reloj: 1 h 30 min)
+   mar 04/11 · Pruebas y paso a preproducción (reloj: 45 min)
+
+Para Jira (cópialo tal cual):
+@Marta se realizaron los ajustes:
+- Reglas de validación de la cuenta
+Entorno: UAT. Ya se puede validar.
+
+¿Quieres ver otra? Dime el ticket.
+```
+
+- El texto para Jira va en un bloque aparte, tal cual, para copiar y pegar. Si la tarea no trae comentario para Jira, arma uno con los textos de cada día, con el mismo formato, y dilo: "Lo armé con lo que quedó de cada día."
+- Del reloj solo lo que marcó cada día. Nunca las horas aprobadas ni cuánto se cobró.
+- Si no hay nada: "No tienes tareas aprobadas en los últimos 30 días." y ofrece buscar más atrás ("¿Busco en los últimos 90 días? 1) Sí 2) No").
+- El historial también está en el panel, en "Mis tareas" → "Historial".
