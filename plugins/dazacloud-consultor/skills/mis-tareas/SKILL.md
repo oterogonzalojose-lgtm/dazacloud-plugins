@@ -1,6 +1,6 @@
 ---
 name: mis-tareas
-description: Muestra las tareas abiertas asignadas al consultor en DazaCloud (en curso, devueltas, sin iniciar, pausadas), con advertencias, horas acumuladas frente a la estimación y un aviso si alguna ya la superó; y, si lo pide, su historial de tareas aprobadas con lo que hizo cada día y el texto para Jira. Usar cuando el consultor dice "mis tareas", "qué tengo", "qué me toca hoy", "qué tengo pendiente", "qué hice en PROY-123", "mi historial", "lo que hice la semana pasada" o similar.
+description: Muestra las tareas abiertas asignadas al consultor en DazaCloud (en curso, devueltas, sin iniciar, pausadas), con advertencias, horas acumuladas frente a la estimación y un aviso si alguna ya la superó; si lo pide, sus horas de reloj de la semana frente a las 40 h, y su historial de tareas aprobadas con lo que hizo cada día y el texto para Jira. Usar cuando el consultor dice "mis tareas", "qué tengo", "qué me toca hoy", "qué tengo pendiente", "qué hice en PROY-123", "mi historial", "lo que hice la semana pasada", "cuántas horas llevo", "mis horas de la semana" o similar.
 ---
 
 # mis-tareas
@@ -20,7 +20,7 @@ Sigue "Cómo se muestra la información" de la biblia `general`. Si no está car
 
 ## Qué necesitas
 
-Servidor MCP `dazacloud`: `leer_biblia`, `mis_tareas`, `mi_historial`. Si no responde o da 401, falta la clave de acceso o no es válida: dile en una frase "No pude conectarme con DazaCloud. Pídele a la coordinadora una clave nueva." y para. Los pasos para cargarla (`/plugin configure dazacloud-consultor@dazacloud-plugins`, o reinstalar el plugin) solo si los pide.
+Servidor MCP `dazacloud`: `leer_biblia`, `mis_tareas`, `mis_horas`, `mi_historial`. Si no responde o da 401, falta la clave de acceso o no es válida: dile en una frase "No pude conectarme con DazaCloud. Pídele a la coordinadora una clave nueva." y para. Los pasos para cargarla (`/plugin configure dazacloud-consultor@dazacloud-plugins`, o reinstalar el plugin) solo si los pide.
 
 ## Pasos
 
@@ -80,3 +80,27 @@ Entorno: UAT. Ya se puede validar.
 - Del reloj solo lo que marcó cada día. Nunca las horas aprobadas ni cuánto se cobró.
 - Si no hay nada: "No tienes tareas aprobadas en los últimos 30 días." y ofrece buscar más atrás ("¿Busco en los últimos 90 días? 1) Sí 2) No").
 - El historial también está en el panel, en "Mis tareas" → "Historial".
+
+## Mis horas de la semana
+
+Cuando pregunta cuánto lleva ("¿cuántas horas llevo esta semana?", "mis horas", "¿llego a las 40?"):
+
+1. `mis_horas(semana)`: sin `semana`, la actual; para otra, cualquier día de esa semana (AAAA-MM-DD). Trae lo que marcó su reloj cada día, de lunes a domingo, por tarea y de todas las empresas, y la meta semanal.
+2. Muéstralo así:
+
+```
+⏱️ Semana del 09/11 al 15/11: 30 h 30 min de 40 h (faltan 9 h 30 min)
+
+   lun 09/11 · 7 h 30 min
+   mar 10/11 · 7 h 45 min
+   mié 11/11 · 7 h 45 min
+   jue 12/11 · 5 h
+   vie 13/11 · 2 h 30 min  ← hoy, tu reloj está corriendo
+
+¿Quieres ver en qué tareas se fue algún día?
+```
+
+- Son horas de **reloj**, no las aprobadas: nunca hables de horas aprobadas ni de cuánto se cobró.
+- Si un día quedó corto, dilo sin juzgar y recuérdale en una línea que, si trabajó sin el reloj, lo declare al cerrar esa tarea (fuera del reloj, con cuándo, qué y por qué).
+- Si el reloj está corriendo, avísalo: el total de hoy todavía crece.
+- También está en el panel, en "Mis tareas" → "Mis horas".
