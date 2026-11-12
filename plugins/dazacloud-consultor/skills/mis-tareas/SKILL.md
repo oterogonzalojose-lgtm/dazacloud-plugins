@@ -1,6 +1,6 @@
 ---
 name: mis-tareas
-description: Muestra las tareas abiertas asignadas al consultor en DazaCloud (en curso, devueltas, sin iniciar, pausadas), con advertencias, horas acumuladas frente a la estimación y un aviso si alguna ya la superó; si lo pide, sus horas de reloj de la semana frente a las 40 h, y su historial de tareas aprobadas con lo que hizo cada día y el texto para Jira. Usar cuando el consultor dice "mis tareas", "qué tengo", "qué me toca hoy", "qué tengo pendiente", "qué hice en PROY-123", "mi historial", "lo que hice la semana pasada", "cuántas horas llevo", "mis horas de la semana" o similar.
+description: Muestra las tareas abiertas asignadas al consultor en DazaCloud (en curso, devueltas, sin iniciar, pausadas), con advertencias, horas acumuladas frente a la estimación y un aviso si alguna ya la superó; si lo pide, sus horas registradas de la semana frente a las 40 h, por día y por tarea, y su historial de tareas aprobadas con lo que hizo cada día y el texto para Jira. Usar cuando el consultor dice "mis tareas", "qué tengo", "qué me toca hoy", "qué tengo pendiente", "qué hice en PROY-123", "mi historial", "lo que hice la semana pasada", "cuántas horas llevo", "mis horas de la semana" o similar.
 ---
 
 # mis-tareas
@@ -85,22 +85,27 @@ Entorno: UAT. Ya se puede validar.
 
 Cuando pregunta cuánto lleva ("¿cuántas horas llevo esta semana?", "mis horas", "¿llego a las 40?"):
 
-1. `mis_horas(semana)`: sin `semana`, la actual; para otra, cualquier día de esa semana (AAAA-MM-DD). Trae lo que marcó su reloj cada día, de lunes a domingo, por tarea y de todas las empresas, y la meta semanal.
-2. Muéstralo así:
+1. `mis_horas(semana)`: sin `semana`, la actual; para otra, cualquier día de esa semana (AAAA-MM-DD). Trae, de lunes a domingo y de todas las empresas, lo **registrado** cada día y en qué tarea (`horas`), lo que marcó el reloj (`reloj`) y si la tarea ya está cerrada. En una tarea cerrada, lo registrado son sus horas declaradas repartidas por día como en la planilla del cliente (si no usó el reloj, en el día del cierre); en una abierta, lo que va marcando el reloj.
+2. Muéstralo así, siempre con las tareas de cada día:
 
 ```
-⏱️ Semana del 09/11 al 15/11: 30 h 30 min de 40 h (faltan 9 h 30 min)
+⏱️ Semana del 09/11 al 15/11: 23 h de 40 h (faltan 17 h)
 
    lun 09/11 · 7 h 30 min
+      PROY-350 Botón de reenvío · 3 h 30 min
+      PROY-342 Limpieza de duplicados · 4 h
    mar 10/11 · 7 h 45 min
-   mié 11/11 · 7 h 45 min
-   jue 12/11 · 5 h
-   vie 13/11 · 2 h 30 min  ← hoy, tu reloj está corriendo
+      PROY-342 Limpieza de duplicados · 6 h 15 min
+      PROY-361 Reporte de casos · 1 h 30 min
+   mié 11/11 · 7 h 45 min  ← hoy
+      PROY-361 Reporte de casos · 5 h 45 min (sin cerrar, tu reloj)
+      PROY-358 Capacitación · 2 h (sin reloj)
 
-¿Quieres ver en qué tareas se fue algún día?
+¿Quieres revisar otra semana?
 ```
 
-- Son horas de **reloj**, no las aprobadas: nunca hables de horas aprobadas ni de cuánto se cobró.
-- Si un día quedó corto, dilo sin juzgar y recuérdale en una línea que, si trabajó sin el reloj, lo declare al cerrar esa tarea (fuera del reloj, con cuándo, qué y por qué).
+- Son las horas que **registró** (declaradas al cerrar, o su reloj si la tarea sigue abierta), no las aprobadas: nunca hables de horas aprobadas ni de cuánto se cobró.
+- Si una tarea cerrada tiene una diferencia con el reloj, muéstrala entre paréntesis ("reloj 3 h", "sin reloj") sin juzgar.
+- Si un día quedó corto, dilo sin juzgar; si tiene tareas sin cerrar, recuérdale que al cerrarlas declare las horas reales (y lo trabajado fuera del reloj, con cuándo, qué y por qué).
 - Si el reloj está corriendo, avísalo: el total de hoy todavía crece.
 - También está en el panel, en "Mis tareas" → "Mis horas".
