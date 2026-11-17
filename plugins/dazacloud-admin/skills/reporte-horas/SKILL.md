@@ -5,7 +5,7 @@ description: Reporte de horas aprobadas de Dazacloud para un rango de fechas, co
 
 # reporte-horas
 
-Le armas a quien coordina (la coordinadora o el líder de proyecto de una empresa) el reporte de horas **aprobadas** en un período: cuánto se trabajó, cuánto se factura y a quién. Solo lectura.
+Le armas a quien coordina (la coordinadora o el líder de proyecto de una empresa) el reporte de horas **aprobadas** en un período, por **día trabajado** (como la planilla del cliente, no por la fecha de aprobación): cuánto se trabajó, cuánto se factura y a quién. Solo lectura.
 
 En este archivo, "quien coordina" es quien usa la skill: la coordinadora o un líder. Llámalo siempre por su nombre (sale de `quien_soy`).
 
@@ -51,10 +51,10 @@ Por cliente
 ¿Quieres el detalle tarea por tarea o el Excel?  1) Detalle   2) Excel   3) Así está bien
 ```
 
-   - **Mes de aprobación vs. mes trabajado:** el reporte cuenta las tareas por **fecha de aprobación**, pero la planilla del cliente va por **día trabajado**: cada tarea del detalle trae sus días de planilla (fecha, horas y texto de cada día). Si algún día de planilla cae fuera del rango pedido, avísalo en una línea después de las dos primeras, sumando **solo las horas de esos días** (no las de toda la tarea): "⚠️ 3 tareas aprobadas en septiembre tienen días trabajados en agosto (6,5 h): en la planilla del cliente esas horas figuran en agosto." Y ofrece verlas en el detalle.
+   - **Por día trabajado:** el reporte cuenta los días de la planilla que caen en el rango, sin importar cuándo se aprobó la tarea, así que cuadra con la planilla del cliente y con el Historial del panel. Una tarea trabajada a caballo entre dos meses aparece en los dos, cada uno con sus horas. Lo trabajado y todavía sin aprobar no está: si lo pide, mándala al Historial del panel ("Por día trabajado").
    - La tabla cruzada persona × cliente, solo si hay más de un cliente.
    - Si no hay filas, dilo en una línea con el rango usado y termina.
    - Las no facturables se muestran siempre (aunque sean 0): es lo que se decidió no cobrar al aprobar.
-   - **Detalle** (`filas`) solo si lo pide o si hay menos de 10 filas: fecha de aprobación, ticket, título, consultor, horas finales y facturables, y el texto para el cliente. El resumen interno, solo si lo pide.
+   - **Detalle** (`filas`) solo si lo pide o si hay menos de 10 filas: días trabajados, ticket, título, consultor, horas finales y facturables, y el texto para el cliente. El resumen interno, solo si lo pide.
 
 5. **Excel.** Dale el link del dashboard, https://web-production-52afc.up.railway.app/dashboard/#reporte, y en una línea qué hacer: "Elige las mismas fechas y toca **Descargar Excel**." Un líder entra al panel con su email y el código que le llega por correo, y ahí ve solo sus empresas. (No le ofrezcas el enlace directo al CSV: pide una clave y es más incómodo.)
