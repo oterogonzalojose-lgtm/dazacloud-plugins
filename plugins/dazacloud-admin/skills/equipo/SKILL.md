@@ -1,6 +1,6 @@
 ---
 name: equipo
-description: Gestión del equipo y de los accesos de Dazacloud, solo para la coordinadora. Muestra quién está en cada empresa (líder y equipo) y quién está desactivado; da de alta a una persona nueva y la suma al equipo de sus empresas; genera un token nuevo si alguien lo perdió o quedó expuesto; desactiva a quien deja el equipo y lo vuelve a activar; cambia el líder de una empresa o quién está en su equipo; y da de alta una empresa nueva. Usar cuando la coordinadora dice "quién está en el equipo", "suma a…", "da de alta a…", "token nuevo para…", "perdió el token", "saca a… del equipo", "se va…", "vuelve…", "cambia el líder de…", "agrega a… a Cliente A", "empresa nueva" o similar.
+description: Gestión del equipo y de los accesos de Dazacloud, solo para la coordinadora. Muestra quién está en cada empresa (líder y equipo) y quién está desactivado; da de alta a una persona nueva y la suma al equipo de sus empresas; genera un token nuevo si alguien lo perdió o quedó expuesto; desactiva a quien deja el equipo y lo vuelve a activar; cambia el líder de una empresa o quién está en su equipo; da de alta una empresa nueva; y elimina una tarea que se creó de más o dejó de tener sentido. Usar cuando la coordinadora dice "quién está en el equipo", "suma a…", "da de alta a…", "token nuevo para…", "perdió el token", "saca a… del equipo", "se va…", "vuelve…", "cambia el líder de…", "agrega a… a Cliente A", "empresa nueva", "elimina la tarea…", "borra esa tarea", "esa tarea sobra" o similar.
 ---
 
 # equipo
@@ -10,7 +10,7 @@ Ayudas a la coordinadora a manejar sola el equipo y los accesos al sistema: qui�
 ## Reglas que no se rompen
 
 - **Solo la coordinadora.** Si la usa un líder de proyecto (o cualquiera que no sea admin): "Esto lo hace la coordinadora. ¿Te redacto el pedido?  1) Sí  2) No", y si dice que sí, le entregas el pedido listo para copiar (qué hay que hacer, con nombre, correo y empresas). No llames a ninguna herramienta que cambie algo.
-- **Nada sin confirmación explícita.** Antes de dar de alta, generar un token, desactivar, reactivar o cambiar una empresa, muestras el resumen de lo que vas a hacer y esperas un "sí".
+- **Nada sin confirmación explícita.** Antes de dar de alta, generar un token, desactivar, reactivar, cambiar una empresa o eliminar una tarea, muestras el resumen de lo que vas a hacer y esperas un "sí".
 - **El token se muestra una sola vez**, en el mensaje inmediatamente posterior a crearlo. Después no lo repites, no lo vuelves a mostrar aunque te lo pidan (si lo perdieron, se genera otro), no lo guardas en ningún lado y nunca lo pegas en Jira, en notas, en comentarios, en biblias ni en la planilla.
 - **El token viaja por privado.** El texto para la persona dice siempre que se lo manden por WhatsApp o correo directo, nunca en un grupo.
 - **El equipo de una empresa se reemplaza entero.** Antes de cambiarlo, lee el equipo actual y manda la lista completa: los que siguen más los nuevos, menos los que salen. Nunca mandes solo el que se suma.
@@ -22,7 +22,7 @@ Sigue "Cómo se muestra la información" de la biblia `general`. Si no está car
 
 ## Qué necesitas
 
-Servidor MCP `dazacloud-admin` (herramientas `quien_soy`, `leer_biblia`, `listar_personas`, `alta_persona`, `rotar_token`, `desactivar_persona`, `reactivar_persona`, `listar_clientes`, `alta_cliente`, `editar_cliente`, `revisar_planilla`, `listar_tareas`, `estado_equipo`, `reasignar_tarea`). Si falta el servidor, dilo en una línea y para. Si falta una herramienta puntual (por ejemplo, la lista de personas), dilo en una línea y haz lo que se pueda con las demás.
+Servidor MCP `dazacloud-admin` (herramientas `quien_soy`, `leer_biblia`, `listar_personas`, `alta_persona`, `rotar_token`, `desactivar_persona`, `reactivar_persona`, `listar_clientes`, `alta_cliente`, `editar_cliente`, `revisar_planilla`, `listar_tareas`, `estado_equipo`, `reasignar_tarea`, `eliminar_tarea`). Si falta el servidor, dilo en una línea y para. Si falta una herramienta puntual (por ejemplo, la lista de personas), dilo en una línea y haz lo que se pueda con las demás.
 
 ## Paso 0 · Quién la usa y biblia
 
@@ -191,6 +191,29 @@ Líder: Tomás · Equipo: Bruno, Carla
 
 3. Con el "sí": `alta_cliente(nombre, herramienta, sitio, zona_horaria, sheet_id, consulta_pendientes, lider_email, equipo)`, sin los datos pendientes.
 4. Confirma en una línea y cierra con lo pendiente: "✅ Cliente C quedó dada de alta. Cuando tengas la planilla, dime «planilla de Cliente C» y la cargo." Lo pendiente se carga después con `editar_cliente`, con el mismo resumen y confirmación. Ofrece sumar la empresa a la biblia `general` (skill `biblia`): su herramienta, cómo se estima y su Jira.
+
+## Eliminar una tarea
+
+Para una tarea que se creó de más o dejó de tener sentido ("elimina la tarea de Bruno de formación", "borra CA-120, sobra"):
+
+1. Búscala con `listar_tareas` (por ticket, persona o empresa). Si hay más de una que encaja, muéstralas numeradas y pregunta cuál. Si no la encuentras, dilo y pide el ticket.
+2. Según cómo esté:
+   - **Sin iniciar, en curso o en pausa:** se puede eliminar; sigue al paso 3.
+   - **Esperando aprobación:** "Está esperando aprobación: primero hay que devolverla (con `aprobaciones`) y después se elimina." No la elimines.
+   - **Aprobada:** "Ya está aprobada y en la planilla: no se puede eliminar." Nada más.
+3. Resumen, motivo y confirmación, en un solo mensaje:
+
+```
+🗑️ Eliminar CA-120 · Ajuste de reporte
+De Bruno · Cliente A · en pausa · 01:30 registradas
+Deja de aparecer en el tablero, en su carga y en sus horas.
+¿Por qué la eliminas? (queda registrado)
+```
+
+   Si tiene horas registradas, dilo en el resumen, como en el ejemplo: esas horas dejan de contar en sus horas de la semana. Si no tiene, omite esa parte. Con el motivo, pregunta: "¿La elimino?  1) Sí  2) No".
+4. Con el "sí": `eliminar_tarea(tarea_id, motivo)`. Cierra con "Listo, CA-120 ya no está en el tablero." Si la coordinadora se arrepiente después, no se perdió nada: Gonzalo la puede recuperar.
+
+Nunca elimines una tarea sin que la coordinadora la haya pedido para esa tarea en particular: si ves tareas que parecen sobrar (por ejemplo, viejas y sin horas), puedes señalarlas y preguntar, pero no las elimines por tu cuenta.
 
 ## Planilla de horas
 
